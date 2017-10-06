@@ -1,0 +1,16 @@
+{
+  "name": "NFL DFS Stats",
+  "description": "NFL DFS Stats Dashboard",
+  "image": "heroku/python",
+  "repository": "https://github.com/huntersinclairtiv/dfs-stats.git",
+  "keywords": ["python", "django" ],
+  "addons": [ "heroku-postgresql" ],
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "python manage.py collectstatic --noinput",
+        "test": "python manage.py test"
+      }
+    }
+  }
+}
