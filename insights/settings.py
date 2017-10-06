@@ -10,6 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,7 +31,7 @@ SECRET_KEY = 'bw%y^p#ibcc+8=m4njs#-=okp5*-8a+be(*5#c9pa=bqn!%d$a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','thinktiv.webfactional.com','107.150.63.234']
+ALLOWED_HOSTS = ['127.0.0.1','dfs-stats.herokuapp.com','107.150.63.234']
 
 
 # Application definition
@@ -114,6 +120,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
 
 
 # Static files (CSS, JavaScript, Images)
