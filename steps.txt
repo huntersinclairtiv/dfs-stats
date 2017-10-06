@@ -1,0 +1,4 @@
+goto root /Developer/football/
+source bin/activate
+check version python -V
+python manage.py runserver

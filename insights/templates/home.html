@@ -1,0 +1,71 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+ 
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+
+    .node rect {
+      cursor: move;
+      fill-opacity: .9;
+      shape-rendering: crispEdges;
+    }
+
+    .node text {
+      pointer-events: none;
+      text-shadow: 0 1px 0 #fff;
+    }
+
+    .link {
+      fill: none;
+      stroke: #000;
+      stroke-opacity: .2;
+    }
+
+    .link:hover {
+      stroke-opacity: .5;
+    }
+
+    .datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {margin-bottom: 20px; font: normal 12px/150% Courier New, Courier, monospace; background: #fff; overflow: hidden; border: 1px solid #256129; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }.datagrid table td, .datagrid table th { padding: 3px 10px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1C8C14), color-stop(1, #1B4019) );background:-moz-linear-gradient( center top, #1C8C14 5%, #1B4019 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1C8C14', endColorstr='#1B4019');background-color:#1C8C14; color:#FFFFFF; font-size: 16px; font-weight: normal; border-left: 1px solid #0A4006; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #00496B; border-left: 1px solid #6FA86D;font-size: 13px;font-weight: normal; }.datagrid table tbody .alt td { background: #E2F4E0; color: #00496B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }.datagrid table tfoot td div { border-top: 1px solid #256129;background: #E1EEF4;} .datagrid table tfoot td { padding: 0; font-size: 10px } .datagrid table tfoot td div{ padding: 2px; }.datagrid table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; }.datagrid table tfoot  li { display: inline; }.datagrid table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #FFFFFF;border: 1px solid #08570E;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #047800), color-stop(1, #114501) );background:-moz-linear-gradient( center top, #047800 5%, #114501 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#047800', endColorstr='#114501');background-color:#047800; }.datagrid table tfoot ul.active, .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #08570E; color: #FFFFFF; background: none; background-color:#335901;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
+
+    input[type="button" i], input[type="submit" i] {
+      border: none;
+      background-color: transparent;
+      color: #00496B;
+      font-size: 13px;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    input[type="button" i]:hover, input[type="submit" i]:hover {
+      text-decoration: underline;
+    }
+
+    </style>
+    <title>Thinktiv Insights</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="/static/sankey.js"></script>
+  </head>
+  <body>
+    <h1>Thinktiv Insights Tools</h1>
+    <p>Below are the supported tools available</b>
+    <ul>
+      <li><a href="/webscrape/keyword">Keyword/Phrase Analyzer</a></li>
+      <li><a href="/webscrape/projects">Webscraper Projects</a></li>
+    </ul>
+
+  </body>
+</html>

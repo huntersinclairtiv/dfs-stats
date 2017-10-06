@@ -1,0 +1,155 @@
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+ 
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+
+    .node rect {
+      cursor: move;
+      fill-opacity: .9;
+      shape-rendering: crispEdges;
+    }
+
+    .node text {
+      pointer-events: none;
+      text-shadow: 0 1px 0 #fff;
+    }
+
+    .link {
+      fill: none;
+      stroke: #000;
+      stroke-opacity: .2;
+    }
+
+    .link:hover {
+      stroke-opacity: .5;
+    }
+
+    .datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {margin-bottom: 20px; font: normal 12px/150% Courier New, Courier, monospace; background: #fff; overflow: hidden; border: 1px solid #256129; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }.datagrid table td, .datagrid table th { padding: 3px 10px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1C8C14), color-stop(1, #1B4019) );background:-moz-linear-gradient( center top, #1C8C14 5%, #1B4019 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1C8C14', endColorstr='#1B4019');background-color:#1C8C14; color:#FFFFFF; font-size: 16px; font-weight: normal; border-left: 1px solid #0A4006; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #00496B; border-left: 1px solid #6FA86D;font-size: 13px;font-weight: normal; }.datagrid table tbody .alt td { background: #E2F4E0; color: #00496B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }.datagrid table tfoot td div { border-top: 1px solid #256129;background: #E1EEF4;} .datagrid table tfoot td { padding: 0; font-size: 10px } .datagrid table tfoot td div{ padding: 2px; }.datagrid table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; }.datagrid table tfoot  li { display: inline; }.datagrid table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #FFFFFF;border: 1px solid #08570E;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #047800), color-stop(1, #114501) );background:-moz-linear-gradient( center top, #047800 5%, #114501 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#047800', endColorstr='#114501');background-color:#047800; }.datagrid table tfoot ul.active, .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #08570E; color: #FFFFFF; background: none; background-color:#335901;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
+
+    input[type="button" i], input[type="submit" i] {
+      border: none;
+      background-color: transparent;
+      color: #00496B;
+      font-size: 13px;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    input[type="button" i]:hover, input[type="submit" i]:hover {
+      text-decoration: underline;
+    }
+    .errormsg{
+      color: #ff0000;
+    }
+    </style>
+    <title>Thinktiv Web Analytics Tool - Create Project</title>
+  </head>
+  <body>
+    <h1>Thinktiv Web Analytics Tool</h1>
+    <h2>Create New Project</h2>
+
+    <p>Lets start by getting a list of all the URLs you want to analyze for this project.  Click here for an <a href="/static/example.csv" download>example template</a>. Once you have your data you can paste it below.</p>
+
+    <form action="" method="POST">
+      {% csrf_token %}
+      <div class="errormsg">{{errorMsg}}</div>
+      <fieldset>
+        <label for="projectname">Project Name:</label>
+        <input type="text" name="projectname" id="projectname" width="100" {% if projectname %}value="{{projectname}}"{% endif %} />
+        {% if 'exists' in errorMsg  %}
+        <label for="projectname">Overwrite existing:</label>
+        <input type="checkbox" name="overwrite" id="overwrite" />
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        <label for="urls">CSV of URL data: (first line should be column headers starting with url)</label><br />
+        <textarea name="urls" id="urls" rows="10" cols="150">{% if csvdata %}{{csvdata}}{% else %}url,company,attribute1,attribute2{% endif %}</textarea><br />
+      </fieldset>
+      <fieldset>
+        <button type="submit" class="submit btn btn-default scrape-it">Submit</button>
+      </fieldset>
+    </form>
+  <script type="text/javascript">
+    var waitingDialog = waitingDialog || (function ($) {
+        'use strict';
+
+      // Creating modal dialog's DOM
+      var $dialog = $(
+        '<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
+        '<div class="modal-dialog modal-s">' +
+        '<div class="modal-content">' +
+          '<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
+          '<div class="modal-body">' +
+            '<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
+          '</div>' +
+        '</div></div></div>');
+
+      return {
+        /**
+         * Opens our dialog
+         * @param message Custom message
+         * @param options Custom options:
+         * 				  options.dialogSize - bootstrap postfix for dialog size, e.g. "sm", "m";
+         * 				  options.progressType - bootstrap postfix for progress bar type, e.g. "success", "warning".
+         */
+        show: function (message, options) {
+          // Assigning defaults
+          if (typeof options === 'undefined') {
+            options = {};
+          }
+          if (typeof message === 'undefined') {
+            message = 'Loading';
+          }
+          var settings = $.extend({
+            dialogSize: 'm',
+            progressType: '',
+            onHide: null // This callback runs after the dialog was hidden
+          }, options);
+
+          // Configuring dialog
+          $dialog.find('.modal-dialog').attr('class', 'modal-dialog').addClass('modal-' + settings.dialogSize);
+          $dialog.find('.progress-bar').attr('class', 'progress-bar');
+          if (settings.progressType) {
+            $dialog.find('.progress-bar').addClass('progress-bar-' + settings.progressType);
+          }
+          $dialog.find('h3').text(message);
+          // Adding callbacks
+          if (typeof settings.onHide === 'function') {
+            $dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+              settings.onHide.call($dialog);
+            });
+          }
+          // Opening dialog
+          $dialog.modal();
+        },
+        /**
+         * Closes dialog
+         */
+        hide: function () {
+          $dialog.modal('hide');
+        }
+      };
+
+    })(jQuery);
+    $(document).ready(function() {
+      $(".scrape-it").click(function() {
+        waitingDialog.show('Please wait while sites are scraped');
+        //setTimeout(function () {waitingDialog.hide();}, 2000);
+      });
+    });
+  </script>
+  </body>
+</html>

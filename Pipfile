@@ -1,0 +1,37 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+
+[packages]
+dj-database-url = "*"
+django = "*"
+gunicorn = "*"
+psycopg2 = "*"
+whitenoise = "*"
+appdirs="*"
+beautifulsoup4 = "*"
+cycler = "*"
+html5lib = "*"
+Jinja2 = "*"
+lxml = "*"
+MarkupSafe = "*"
+matplotlib = "*"
+mpld3 = "*"
+nltk = "*"
+numpy = "*"
+packaging = "*"
+pyparsing = "*"
+python-dateutil = "*"
+pytz = "*"
+requests ="*"
+six = "*"
+urllib3 = "*"
+webencodings = "*"
+stop_words = "*"
+gensim = "*"
+
+[requires]
+python_version = "3.6"
