@@ -147,6 +147,7 @@ ALLOWED_HOSTS = ['*']
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_ROOT = os.path.join(os.path.join(BASE_DIR, 'nfl_research'), 'static')
+print(STATIC_ROOT)
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
