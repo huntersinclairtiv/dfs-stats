@@ -1,0 +1,9 @@
+venv
+*.pyc
+.env
+db.sqlite3
+lib
+*.lock
+activate
+include
+bin
