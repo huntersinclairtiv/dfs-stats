@@ -1,0 +1,2844 @@
+{% load static %}
+{% load insight_tags %}
+<!DOCTYPE html>
+<html>
+  <head>   
+    <title>Showdown Dominator</title>
+    {% include 'nfl_research/partials/html_common_head.html' %}
+    <style>
+        
+    </style>
+  </head>
+  <body class="fixed-sn light-blue-skin">
+
+    {% include 'nfl_research/partials/header_w_sidebar.html' with active_page='nfl_stats' page_title='Showdown Dominator' %}
+
+    <main class="body-container nav-out">
+
+        <!-- h1 class="left">Showdown Analysis Tool</h1 -->
+        <!-- p class="clearfix">This table shows awesome stats.</p -->
+        <div id="selected-game-wrap" class="selected-game-wrap">
+            <div class="selected-game-flex-wrap">
+                <div id="selected-game" class="selected-game">
+                    <div class="filter-box-selected" data-home="" data-away="">
+                       <div class="filter-box-head">
+                           <div class="website-name">DraftKings</div>
+                       </div>
+                       <div class="filter-box-top clearfix">
+                           <div class="filter-players-games away-team-wrap active">
+                               <div class="team">
+                                   <div class="team-logo">
+                                       <img src="/static/img/svg/atl.svg" alt="" title="">
+                                   </div>
+                               </div>
+                               <span class="spread-text">Spread: <strong>0</strong></span>
+                           </div>
+                           <div class="filter-players-games home-team-wrap active">
+                               <div class="team">
+                                   <div class="team-logo">
+                                       <img src="/static/img/svg/atl.svg" alt="" title="">
+                                   </div>
+                               </div>
+                               <span class="spread-text">Spread: <strong>0</strong></span>
+                           </div>
+                           <span class="vs-text">@</span>
+                       </div>
+                       <div class="filter-box-bottom">
+                           <div class="season-week-label">2020 REG - Week 1</div>
+                           <span class="game-time">Jan 1, 1:00 PM</span>
+                           <div class="total-text" style="background-color: green;">Total: 0</div>
+                       </div>
+                   </div>
+                </div>
+                <div id="game-controls-wrap" class="game-controls-wrap">
+                    <div id="game-controls-away" class="game-controls">
+                        <div class="game-controls-header">
+                            <span class="team-initials">Away Team: <b></b></span>
+                            <span class="team-score">Score: <b></b></span>
+                        </div>
+                        <div class="game-control-row advanced-headings">
+                            <span class="orig-heading">Seas. Avg</span>
+                            <span class="allowed-heading">Opp Allow</span>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="pass-tds">Passing TDs:</label>
+                            <input class="pass-tds game-input" />
+                            <input class="pass-tds-orig game-input-xtra" readonly/>
+                            <input class="pass-tds-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="rush-tds">Rushing TDs:</label>
+                            <input class="rush-tds game-input" />
+                            <input class="rush-tds-orig game-input-xtra" readonly/>
+                            <input class="rush-tds-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="fg-atts">Field Goal ATTs:</label>
+                            <input class="fg-atts game-input" />
+                            <input class="fg-atts-orig game-input-xtra" readonly/>
+                            <input class="fg-atts-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="turnovers">Turnovers:</label>
+                            <input class="turnovers game-input" />
+                            <input class="turnovers-orig game-input-xtra" readonly/>
+                            <input class="turnovers-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="advanced-controls-wrapper">
+                            <div class="game-control-row">
+                                <label for="off-snaps">Offensive Snaps:</label>
+                                <input class="off-snaps game-input" />
+                                <input class="off-snaps-orig game-input-xtra" readonly/>
+                                <input class="off-snaps-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="perc-pass">Percent Pass:</label>
+                                <input class="perc-pass game-input" />
+                                <input class="perc-pass-orig game-input-xtra" readonly/>
+                                <input class="perc-pass-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="perc-rush">Percent Rush</label>
+                                <input class="perc-rush game-input" />
+                                <input class="perc-rush-orig game-input-xtra" readonly/>
+                                <input class="perc-rush-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="comp-perc">Completion Percent:</label>
+                                <input class="comp-perc game-input" />
+                                <input class="comp-perc-orig game-input-xtra" readonly/>
+                                <input class="comp-perc-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="yds-per-rec">Yards/Reception:</label>
+                                <input class="yds-per-rec game-input" />
+                                <input class="yds-per-rec-orig game-input-xtra" readonly/>
+                                <input class="yds-per-rec-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="yds-per-rush">Yards/Rush:</label>
+                                <input class="yds-per-rush game-input" />
+                                <input class="yds-per-rush-orig game-input-xtra" readonly/>
+                                <input class="yds-per-rush-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="pass-att">Pass Attempts:</label>
+                                <input class="pass-att game-input" />
+                                <input class="pass-att-orig game-input-xtra" readonly/>
+                                <input class="pass-att-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="pass-comp">Pass Completions:</label>
+                                <input class="pass-comp game-input" />
+                                <input class="pass-comp-orig game-input-xtra" readonly/>
+                                <input class="pass-comp-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="pass-yards">Pass Yards:</label>
+                                <input class="pass-yards game-input" />
+                                <input class="pass-yards-orig game-input-xtra" readonly/>
+                                <input class="pass-yards-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="rush-att">Rush Attempts:</label>
+                                <input class="rush-att game-input" />
+                                <input class="rush-att-orig game-input-xtra" readonly/>
+                                <input class="rush-att-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="rush-yards">Rush Yards:</label>
+                                <input class="rush-yards game-input" />
+                                <input class="rush-yards-orig game-input-xtra" readonly/>
+                                <input class="rush-yards-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="fg-success">Field goal success:</label>
+                                <input class="fg-success game-input" />
+                                <input class="fg-success-orig game-input-xtra" readonly/>
+                                <input class="fg-success-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="def-sacks">DEF Sacks:</label>
+                                <input class="def-sacks game-input" />
+                                <input class="def-sacks-orig game-input-xtra" readonly/>
+                                <input class="def-sacks-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="def-tds">DEF TDs:</label>
+                                <input class="def-tds game-input" />
+                                <input class="def-tds-orig game-input-xtra" readonly/>
+                                <input class="def-tds-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="score">Team Score:</label>
+                                <input class="score game-input-xtra" readonly/>
+                                <input class="score-orig game-input-xtra" readonly/>
+                                <input class="score-allowed game-input-xtra" readonly/>
+                            </div>
+                        </div>
+                        <div class="game-controls-advanced-but-wrap">
+                            <button class="game-controls-advanced-but btn btn-primary waves-effect waves-light">Advanced</button>
+                        </div>
+                        <div class="game-controls-footer">
+                            <span class="vegas-info">Vegas Assumed Score: <b></b></span>
+                        </div>
+                    </div>
+                    <div class="at-team-symbol-wrapper">
+                        <span class="at-team-symbol">@</span>
+                    </div>
+                    <div id="game-controls-home" class="game-controls">
+                        <div class="game-controls-header">
+                            <span class="team-initials">Home Team: <b></b></span>
+                            <span class="team-score">Score: <b></b></span>
+                        </div>
+                        <div class="game-control-row advanced-headings">
+                            <span class="orig-heading">Seas. Avg</span>
+                            <span class="allowed-heading">Opp Allow</span>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="pass-tds">Passing TDs:</label>
+                            <input class="pass-tds game-input" />
+                            <input class="pass-tds-orig game-input-xtra" readonly/>
+                            <input class="pass-tds-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="rush-tds">Rushing TDs:</label>
+                            <input class="rush-tds game-input" />
+                            <input class="rush-tds-orig game-input-xtra" readonly/>
+                            <input class="rush-tds-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="fg-atts">Field Goal ATTs:</label>
+                            <input class="fg-atts game-input" />
+                            <input class="fg-atts-orig game-input-xtra" readonly/>
+                            <input class="fg-atts-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="game-control-row">
+                            <label for="turnovers">Turnovers:</label>
+                            <input class="turnovers game-input" />
+                            <input class="turnovers-orig game-input-xtra" readonly/>
+                            <input class="turnovers-allowed game-input-xtra" readonly/>
+                        </div>
+                        <div class="advanced-controls-wrapper">
+                            <div class="game-control-row">
+                                <label for="off-snaps">Offensive Snaps:</label>
+                                <input class="off-snaps game-input" />
+                                <input class="off-snaps-orig game-input-xtra" readonly/>
+                                <input class="off-snaps-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="perc-pass">Percent Pass:</label>
+                                <input class="perc-pass game-input" />
+                                <input class="perc-pass-orig game-input-xtra" readonly/>
+                                <input class="perc-pass-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="perc-rush">Percent Rush</label>
+                                <input class="perc-rush game-input" />
+                                <input class="perc-rush-orig game-input-xtra" readonly/>
+                                <input class="perc-rush-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="comp-perc">Completion Percent:</label>
+                                <input class="comp-perc game-input" />
+                                <input class="comp-perc-orig game-input-xtra" readonly/>
+                                <input class="comp-perc-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="yds-per-rec">Yards/Reception:</label>
+                                <input class="yds-per-rec game-input" />
+                                <input class="yds-per-rec-orig game-input-xtra" readonly/>
+                                <input class="yds-per-rec-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="yds-per-rush">Yards/Rush:</label>
+                                <input class="yds-per-rush game-input" />
+                                <input class="yds-per-rush-orig game-input-xtra" readonly/>
+                                <input class="yds-per-rush-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="pass-att">Pass Attempts:</label>
+                                <input class="pass-att game-input" />
+                                <input class="pass-att-orig game-input-xtra" readonly/>
+                                <input class="pass-att-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="pass-comp">Pass Completions:</label>
+                                <input class="pass-comp game-input" />
+                                <input class="pass-comp-orig game-input-xtra" readonly/>
+                                <input class="pass-comp-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="pass-yards">Pass Yards:</label>
+                                <input class="pass-yards game-input" />
+                                <input class="pass-yards-orig game-input-xtra" readonly/>
+                                <input class="pass-yards-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="rush-att">Rush Attempts:</label>
+                                <input class="rush-att game-input" />
+                                <input class="rush-att-orig game-input-xtra" readonly/>
+                                <input class="rush-att-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="rush-yards">Rush Yards:</label>
+                                <input class="rush-yards game-input" />
+                                <input class="rush-yards-orig game-input-xtra" readonly/>
+                                <input class="rush-yards-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="fg-success">Field goal success:</label>
+                                <input class="fg-success game-input" />
+                                <input class="fg-success-orig game-input-xtra" readonly/>
+                                <input class="fg-success-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="def-sacks">DEF Sacks:</label>
+                                <input class="def-sacks game-input" />
+                                <input class="def-sacks-orig game-input-xtra" readonly/>
+                                <input class="def-sacks-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="def-tds">DEF TDs:</label>
+                                <input class="def-tds game-input" />
+                                <input class="def-tds-orig game-input-xtra" readonly/>
+                                <input class="def-tds-allowed game-input-xtra" readonly/>
+                            </div>
+                            <div class="game-control-row">
+                                <label for="score">Team Score:</label>
+                                <input class="score game-input-xtra" readonly/>
+                                <input class="score-orig game-input-xtra" readonly/>
+                                <input class="score-allowed game-input-xtra" readonly/>
+                            </div>
+                        </div>
+                        <div class="game-controls-advanced-but-wrap">
+                            <button class="game-controls-advanced-but btn btn-primary waves-effect waves-light">Advanced</button>
+                        </div>
+                        <div class="game-controls-footer">
+                            <span class="vegas-info">Vegas Assumed Score: <b></b></span>
+                        </div>
+                    </div>
+                    <div class="generate-wrapper">
+                        <button class="generate-button btn btn-primary waves-effect waves-light">GENERATE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-controls-wrap" class="main-controls-wrap">
+          <div id="main-controls" class="table-controls">
+              <select id="sites" class="site-select mdb-select">
+                <option value="" disabled selected>Choose DFS Site</option>
+                <option value="DK">DraftKings</option>
+                <option value="Fanduel">Fanduel</option>
+              </select>
+              <select id="years" class="year-select mdb-select">
+                <option value="" selected disabled>NFL Year</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2014">2014</option>
+                <option value="2013">2013</option>
+              </select>
+              <select id="seasons" class="season-select mdb-select">
+                <option value="" selected disabled>NFL Season</option>
+                <option value="REG">Regular</option>
+                <option value="PRE">Pre</option>
+                <option value="POST">Post</option>
+              </select>
+              <select id="weeks" class="week-select mdb-select">
+                <option value="" selected disabled>NFL Week</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+              </select>
+              <!-- select id="games" class="games-select mdb-select">
+                <option value="" disabled selected>Choose your game</option>
+                <option value=""></option>
+              </select -->
+              <select id="slates" class="slate-select mdb-select">
+                <option value="" disabled selected>Choose your slate</option>
+                <option value=""></option>
+              </select>
+          </div>
+          <div class="gamesContainer game-filter-wrap"></div>
+        </div>
+        <div id="tabulator-controls" class="table-controls">
+            <span class='table-title'>Showdown Player Projections</span>
+            <!-- i class="fa fa-filter fa-fw"></i -->
+            <!-- input class="filterByName" name="Name" type="text" placeholder="Filter Table By Name" / -->
+            <!-- button name="undo" class="btn btn-primary"><i class="fa fa-undo"></i> Undo Edit</button>
+            <button name="add-row" class="btn btn-primary"><i class="fa fa-plus"></i> Add Row</button -->
+            <button name="download-csv" class="btn btn-primary" title="Download CSV"><i class="fa fa-download"></i></button>
+            <!-- button name="download-json" class="btn btn-primary">Download JSON</button>
+            <button name="download-xlsx" class="btn btn-primary">Download XLSX</button -->
+            <button name="hide-col" class="btn btn-primary toggleDetailsButton col-hide" title="Show Details"><i class="fa fa-eye"></i></button>
+            <button name="loadstats" class="btn btn-primary reloadDataBut" title="Force Reload Data"><i class="fa fa-refresh"></i></button>
+            <!-- button name="loadsalary" class="btn btn-primary loadSalaryButton">Load weeks salaries</button -->
+        </div>
+        {% csrf_token %}
+        <div id="tabulator-table"></div>
+
+      <div id="loader" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">
+        <div class="modal-dialog modal-m" style="z-index:9999">
+          <div class="modal-content">
+            <div class="modal-header"><h3 style="margin:0;">Loading This Weeks Stats</h3></div>
+            <div class="modal-body">
+              <div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+      </div>
+      <!-- SCRIPTS -->
+      <!-- JQuery -->
+      <!-- MDB core JavaScript with jQuery and bootstrap included-->
+      <script type="text/javascript" src="{% static 'js/mdb.compiled.min.js' %}"></script>
+      <!-- script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script -->
+      <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+
+      <!-- Latest compiled and minified JavaScript -->
+      <!-- script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script -->
+      
+      <!-- Sparkline control for tables -->
+      <script type="text/javascript" src="{% static 'js/sparkline.js' %}"></script>
+      <!-- Tabulator Table controls -->
+      <script type="text/javascript" src="{% static 'js/tabulator.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/jquery_wrapper.min.js' %}"></script>
+      <!-- Bootstrap tooltips -->
+      <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+      <!-- Bootstrap core JavaScript -->
+      <!-- script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script -->
+      <!-- D3 graph controls -->
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+      <!-- hamburger controls -->
+      <!-- script src="{% static 'hamburger.js' %}"></script -->
+      <script src="{% static 'js/jquery.mousewheel.min.js' %}"></script>
+      <script src="{% static 'js/jQAllRangeSliders-min.js' %}"></script>
+      <script src="{% static 'js/jquery-ui-dragslider.js' %}"></script>
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js"></script>
+
+
+
+      <script type="text/javascript" src="{% static 'modal.js' %}"></script>
+      <script type="text/javascript">
+        /* 
+        NOTES : TODO STUFF
+            - Update the projection team stats to be based on Season AVG adjusted by +/- difference
+            between the Opp Allowed Rank of teams the off has faced VS the team they are going to face.
+            : Example
+            : ATL - Passing Yards Per Game = 325 - ranks 1st best in nfl
+            : CAR - Passing Yards allowed per game = 275 - ranks 12th best in nfl
+            : ATL - Opp Pass Yards allow per game = 300 avg - ranks 24th best in nfl
+            : CAR - Opp Pass Yards per game avg = 290 avg - ranks 16th best in nfl
+            : To Calculate Projected ATL Passing Yards in game vs CAR here is formula
+            : (((ATL_PassYardsPerGameAvg - ATL_OppsPassYardsAllowPerGameAvg) + CAR_PassingYardsAllowedPerGame) +
+            : ((CAR_PassingYardsAllowedPerGame - CAR_OppPassYardsPerGameAvg) + ATL_PassingYardsPerGame)) / 2
+  
+        */
+      
+      
+        var game = '';
+        var week = '';
+        var slate = '';
+        var slates = [];
+        var currentweek = '';
+        var season = "";
+        var site = "DK";
+        var year = '';
+        var reload = 'false';
+        var homeTeam = '';
+        var awayTeam = '';
+        var gameElemLastSelected = null;
+        var homeTeamStats = {};
+        var awayTeamStats = {};
+        var homeProjData = [];
+        var awayProjData = [];
+        var playerProjData = {};
+        var projTotalsObj = {};
+        var currentlyLoadedTableData = '';
+        var allTeamSeasonData = [];
+        var dfsArmyPlayerProjs = [];
+        var dfsArmyPlayerProjsObj = {};
+      
+        /* TABLE FORMATTERS */
+        //generate line chart
+        var lineFormatter = function(cell, formatterParams){
+            setTimeout(function(){ //give cell enough time to be added to the DOM before calling sparkline formatter
+              cell.getElement().sparkline(cell.getValue(), {width:"100%", type:"line", disableTooltips:true});
+            }, 10);
+        };
+        
+        var percentFormatter = function(cell, formatterParams){
+            return cell.getValue() + "%"; //return the contents of the cell;
+        };
+
+        var checkForBlank = function(value, data, type, mutatorParams, cell){
+            if (type == 'edit') { //If editting then recalculate projections
+                calculateProjection(data, type);
+            }
+            
+            thisVale = parseFloat(value);
+            if (isNaN(thisVale) || value == '') {
+                return 0;
+            }
+            return roundNum(thisVale);
+        };
+        
+        // NOTE: This function should no longer be used since we need to average values in data feed BEFORE loading
+        // in the table - this is done so when data is updated or edited programmatically we do not RE-average it again.
+        var avgMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+
+            if (type == 'edit') { //If editting then recalculate projections
+                calculateProjection(data, type);
+
+                thisVale = parseFloat(value);
+                if (isNaN(thisVale) || value == '') {
+                    return 0;
+                }
+                return roundNum(thisVale);
+            }
+            
+    
+            // Commenting this function out since we will average before loading in table now
+            var numGames = data.Played || 0;
+            if (numGames <= 0) {
+                return 0;
+            }
+            
+            var avgVal = ((value && value!="") ? value : 0) / numGames;
+            avgVal = Math.round((avgVal + Number.EPSILON) * 10) / 10
+
+            return avgVal;  
+        };
+        
+        var fumbleMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            if (type == 'edit' || (typeof value != 'undefined') || (typeof data.editing != 'undefined' && data.editing == true)) { //If editting then recalculate projections
+                calculateProjection(data, type);
+
+                thisVale = parseFloat(value); //since we are editing don't pull from other data
+                if (isNaN(thisVale) || value == '') {
+                    return 0;
+                }
+                return roundNum(thisVale);
+            }
+            
+            var fumbles = data.FumblesLost;
+            if (data.FantasyPosition == 'DST') {
+                fumbles = data.FumblesRecovered
+            }
+            return (fumbles && fumbles!="") ? fumbles : 0;
+        };
+        var interceptionMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            if (type == 'edit' || (typeof value != 'undefined') || (typeof data.editing != 'undefined' && data.editing == true)) { //If editting then recalculate projections
+                calculateProjection(data, type);
+
+                thisVale = parseFloat(value); //since we are editing don't pull from other data
+                if (isNaN(thisVale) || value == '') {
+                    return 0;
+                }
+                return roundNum(thisVale);
+            }
+
+            var interceptions = data.PassingInterceptions;
+            if (data.FantasyPosition == 'DST') {
+                interceptions = data.Interceptions
+            }
+            return (interceptions && interceptions!="") ? interceptions : 0;
+        };
+        var paMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            if (type == 'edit' || (typeof value != 'undefined') || (typeof data.editing != 'undefined' && data.editing == true)) { //If editting then recalculate projections
+                calculateProjection(data, type);
+
+                thisVale = parseFloat(value); //since we are editing don't pull from other data
+                if (isNaN(thisVale) || value == '') {
+                    return 0;
+                }
+                return roundNum(thisVale);
+            }
+            return calculatePA(data);
+        };
+        
+        
+        
+        var captainMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+
+            /*
+            // When we did based on season avg
+            var returnVal = fantasyPointsMutator(value, data, type, params, component);
+            */
+            var returnVal = newProjMutator(value, data, type, params, component);
+            returnVal = parseFloat(returnVal) * 1.5;
+            returnVal = Math.round((returnVal + Number.EPSILON) * 10) / 10
+            return returnVal;
+        };
+        var fantasyPointsMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            var returnVal = 0;
+            if (site == 'DK') {
+                returnVal = data.FantasyPointsDraftKings;
+            } else if (site == 'Fanduel') {
+                returnVal = data.FantasyPointsFanDuel;
+            }
+
+            return (returnVal && returnVal!="") ? returnVal : 0;
+        };
+        
+        var armyPointsMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            var lookupKey = data.Name + '_' +  data.Team + '_' + data.FantasyPosition;
+            if (lookupKey in dfsArmyPlayerProjsObj) {
+                thisArmyPlayer = dfsArmyPlayerProjsObj[lookupKey];
+                if (thisArmyPlayer.adminPoints == 0) {
+                    // This player is not playing or not projected to score anything according to army
+                    // do something?
+                }
+                return thisArmyPlayer.adminPoints;
+            }
+
+            return 0;
+        };
+
+        var newProjMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            return getProjection(data);
+        };
+                
+        var salaryMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            var lookupKey = data.Name + '_' +  data.Team + '_' + data.FantasyPosition;
+            if (lookupKey in dfsArmyPlayerProjsObj) {
+                thisArmyPlayer = dfsArmyPlayerProjsObj[lookupKey];
+                return thisArmyPlayer.salary;
+            }
+
+            return 0;
+        };
+        var dvpMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            var lookupKey = data.Name + '_' +  data.Team + '_' + data.FantasyPosition;
+            if (lookupKey in dfsArmyPlayerProjsObj) {
+                thisArmyPlayer = dfsArmyPlayerProjsObj[lookupKey];
+                if (thisArmyPlayer.dvp == '') {
+                    return 0;
+                }
+                return parseInt(thisArmyPlayer.dvp);
+            }
+
+            return 0;
+        };
+
+        var parentMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            var children = data['_children'];
+            if (children) {
+                return 1;
+            }
+
+            return 0;
+        };
+        
+        /*
+        // Not going to use these as we set Proj in data before loading 
+        var projsMutator = function(value, data, type, keyVal){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            if (data['_children']) {
+                //We have a parent so handle with Projections
+            } else {
+                //child so just return value
+                return value;
+            }
+            
+            if (type == 'edit' || (typeof data.editing != 'undefined' && data.editing == true)) { //If editting then recalculate projections
+                calculateProjection(data, type);
+
+                thisVale = parseFloat(value);
+                if (isNaN(thisVale) || value == '') {
+                    return 0;
+                }
+                return roundNum(thisVale);
+            } else {   
+                //This should return the percentage of the team total for each value 
+            
+                var lookupKey = data.PlayerID;
+                if (lookupKey in playerProjData) {
+                    thisProjPlayer = playerProjData[lookupKey];
+                    if (thisProjPlayer[keyVal] == '') {
+                        return 0;
+                    }
+                    var playerVal = parseFloat(thisProjPlayer[keyVal]);
+                    if (isNaN(playerVal) || playerVal == 0) {
+                        return 0;
+                    } else {
+                        return roundNum(playerVal);
+                    }
+                }
+            }
+
+            return 0;
+        };
+        
+        var projsPercMutator = function(data, keyVal){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            
+            
+            //This should return the percentage of the team total for each value 
+            
+            var lookupKey = data.PlayerID;
+            if (lookupKey in playerProjData) {
+                thisProjPlayer = playerProjData[lookupKey];
+                if (thisProjPlayer[keyVal] == '') {
+                    return 0;
+                }
+                var playerVal = parseFloat(thisProjPlayer[keyVal]);
+                var totalVal = parseFloat(projTotalsObj[thisProjPlayer.Team][keyVal]);
+                if (isNaN(totalVal) || isNaN(playerVal) || playerVal == 0) {
+                    return 0;
+                } else {
+                    console.log('player: ' + playerVal + ' total: ' + totalVal);
+                    return roundNum((playerVal / totalVal) * 100);
+                }
+            }
+
+            return 0;
+        };
+        */
+        
+        var editCheck = function(cell){
+            //cell - the cell component for the editable cell
+
+            //get row data
+            var data = cell.getRow().getData();
+            var children = data['_children'];
+            if (children) {
+                return true;
+            }
+            return false;
+        }
+
+        function calculatePA(data) {
+
+            /*
+                  "FieldGoalsMade":player_row.get('FieldGoalsMade',0),
+                  "FieldGoalPercentage":player_row.get('FieldGoalPercentage',0),
+                  "ExtraPointsMade":player_row.get('ExtraPointsMade',0),
+                  "FantasyPointsFanDuel":player_row.get('FantasyPointsFanDuel',0),
+                  "FantasyPointsDraftKings":player_row.get('FantasyPointsDraftKings',0),
+                  "FieldGoalsMade0to19":player_row.get('FieldGoalsMade0to19',0),
+                  "FieldGoalsMade20to29":player_row.get('FieldGoalsMade20to29',0),
+                  "FieldGoalsMade30to39":player_row.get('FieldGoalsMade30to39',0),
+                  "FieldGoalsMade40to49":player_row.get('FieldGoalsMade40to49',0),
+                  "FieldGoalsMade50Plus":player_row.get('FieldGoalsMade50Plus',0),
+            */
+            var fumbles = data.FumblesLost;
+            if (data.FantasyPosition == 'DST') {
+                fumbles = data.FumblesRecovered
+            }
+            return (fumbles && fumbles!="") ? fumbles : 0;
+        }
+
+        function calculateProjection(data, type) {
+            if (type == 'edit' || (typeof data.editing != 'undefined' && data.editing == true)) { //If editting then recalculate projections
+                var projValue = getProjection(data);
+                data.editing = false;
+                $("#tabulator-table").tabulator("updateData", [data]); //update data
+            }
+        }
+        function getProjection(data) {
+            //data - the data for the row
+        
+            var paValue = calculatePA(data);
+
+            var projValue = 0;
+            if (site == 'DK') {
+                projValue = (
+                    (data.PassingYards / 25.0) + (data.PassingYards >= 300 ? 3 : 0) + (data.PassingTouchdowns * 4.0) + 
+                    (data.RushingYards / 10.0) + (data.RushingYards >= 100 ? 3 : 0) + (data.RushingTouchdowns * 6.0) + 
+                    (data.ReceivingYards / 10) + (data.ReceivingYards >= 100 ? 3 : 0) + (data.ReceivingTouchdowns * 6.0) + (data.Receptions * 1.0) +
+                    (data.FantasyPosition == 'DST' ? data.Sacks * 1.0 : 0) +
+                    (data.FantasyPosition == 'DST' ? data.Interceptions * 2.0 : (-1 * data.PassingInterceptions)) +
+                    (data.FantasyPosition == 'DST' ? data.FumblesRecovered * 2.0 : (-1 * data.FumblesLost)) +
+                    (paValue));
+            } else if (site == 'Fanduel') {
+                projValue = (
+                    (data.PassingYards / 25.0) + (data.PassingTouchdowns * 4.0) + 
+                    (data.RushingYards / 10.0) + (data.RushingTouchdowns * 6.0) + 
+                    (data.ReceivingYards / 10) + (data.ReceivingTouchdowns * 6.0) + (data.Receptions * 0.5) +
+                    (data.FantasyPosition == 'DST' ? data.Sacks * 1.0 : 0) +
+                    (data.FantasyPosition == 'DST' ? data.Interceptions * 2.0 : (-1 * data.PassingInterceptions)) +
+                    (data.FantasyPosition == 'DST' ? data.FumblesRecovered * 2.0 : (-2 * data.FumblesLost)) +
+                    (paValue));
+            }
+        
+            return roundNum(projValue);
+        }
+
+        function toggleDetailColumns(toggleVal) {
+            $("#tabulator-table").tabulator(toggleVal,"Team");
+            $("#tabulator-table").tabulator(toggleVal,"FantasyPosition");
+            $("#tabulator-table").tabulator(toggleVal,"PassingAttemptsShare");
+            $("#tabulator-table").tabulator(toggleVal,"PassingAttempts");
+            $("#tabulator-table").tabulator(toggleVal,"PassingCompletions");
+            $("#tabulator-table").tabulator(toggleVal,"PassingYardsPerCompletion");
+            $("#tabulator-table").tabulator(toggleVal,"PassingYards");
+            $("#tabulator-table").tabulator(toggleVal,"PassingTouchdowns");
+            $("#tabulator-table").tabulator(toggleVal,"RushingAttemptsShare");
+            $("#tabulator-table").tabulator(toggleVal,"RushingAttempts");
+            $("#tabulator-table").tabulator(toggleVal,"RushingYardsPerAttempt");
+            $("#tabulator-table").tabulator(toggleVal,"RushingYards");
+            $("#tabulator-table").tabulator(toggleVal,"RushingTouchdowns");
+            $("#tabulator-table").tabulator(toggleVal,"ReceivingTargetsShare");
+            $("#tabulator-table").tabulator(toggleVal,"ReceivingTargets");
+            $("#tabulator-table").tabulator(toggleVal,"Receptions");
+            $("#tabulator-table").tabulator(toggleVal,"ReceivingYardsPerReception");
+            $("#tabulator-table").tabulator(toggleVal,"ReceivingYards");
+            $("#tabulator-table").tabulator(toggleVal,"ReceivingTouchdowns");
+            $("#tabulator-table").tabulator(toggleVal,"Sacks");
+            $("#tabulator-table").tabulator(toggleVal,"iInterceptions");
+            $("#tabulator-table").tabulator(toggleVal,"iFumbles");
+            $("#tabulator-table").tabulator(toggleVal,"iPA");
+            if (toggleVal == "hideColumn") {
+                $('.toggleDetailsButton').html('<i class="fa fa-eye"></i>');
+                $("#tabulator-table").css('width', '800px');
+                $("#tabulator-controls").css('width', '800px');
+            } else {
+                $('.toggleDetailsButton').html('<i class="fa fa-eye-slash"></i>');
+                $("#tabulator-table").css('width', 'auto');
+                $("#tabulator-controls").css('width', 'auto');
+            }
+            $("#tabulator-table").tabulator("redraw");
+        }
+        /* TABLE FORMATTERS */
+            
+        function setColumnHeadersBasedOnJSON(thisObj) {
+          newColumns = [];
+          if (thisObj && typeof thisObj != "undefined") {
+            for (const key of Object.keys(thisObj)) {
+                //console.log(key, obj[key]);
+                var newObj = {
+                  title: key,
+                  field: key,
+                  sorter: isNaN(thisObj[key]) ? "string" : "number"
+                };
+              
+                if (!isNaN(thisObj[key])) {
+                  newObj.mutator = checkForBlank;
+                }
+              
+                if (key.toLowerCase().indexOf("pct") >= 0 || key.toLowerCase().indexOf("percent") >= 0) {
+                  newObj.formatter = percentFormatter;
+                }
+              
+                if (key.toLowerCase() == "player" || key.toLowerCase() == "name") {
+                  newObj.frozen = true;
+                  newColumns.unshift(newObj); /*front of array */
+                } else {
+                  newColumns.push(newObj);
+                }
+            }
+          }
+          $("#tabulator-table").tabulator("setColumns", newColumns);
+        }
+        function setColumnHeadersMin() {
+          newColumns = [];
+          if (thisObj && typeof thisObj != "undefined") {
+            for (const key of Object.keys(thisObj)) {
+                //console.log(key, obj[key]);
+                var newObj = {
+                  title: key,
+                  field: key,
+                  sorter: isNaN(thisObj[key]) ? "string" : "number"
+                };
+              
+                if (!isNaN(thisObj[key])) {
+                  newObj.mutator = checkForBlank;
+                }
+              
+                if (key.toLowerCase().indexOf("pct") >= 0 || key.toLowerCase().indexOf("percent") >= 0) {
+                  newObj.formatter = percentFormatter;
+                }
+              
+                if (key.toLowerCase() == "player" || key.toLowerCase() == "name") {
+                  newObj.frozen = true;
+                  newColumns.unshift(newObj); /*front of array */
+                } else {
+                  newColumns.push(newObj);
+                }
+            }
+          }
+          $("#tabulator-table").tabulator("setColumns", newColumns);
+        }
+        
+        function loadSeasonData() {
+          var slate = '';
+          load_season_data(year, season, site, game);
+        }
+        /* 
+          Loads this weeks slates if not already loaded
+        */
+        function getSlates() {       
+            if (year != '' && week != '') {   
+                var url = "/nfl_research/get_slates/"; // the script where you handle the form input.
+                //waitingDialog.show('Please wait while this weeks stats are loaded');
+                var thisData = {
+                  week: week,
+                  currentweek: currentweek,
+                  year: year,
+                  site: site,
+                  season: season, /* REG, POST, PRE */
+                  reload: reload,
+                  csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                };
+                $.ajax({
+                  context: this,
+                  type: "POST",
+                  url: url,
+                  data: thisData, 
+                  beforeSend: function() {
+                     $('#loader').show();
+                     $('#loader').addClass('show');
+                  },
+                  complete: function(){
+                     $('#loader').removeClass('show');
+                     $('#loader').hide();
+                  },
+                  success: function(data)
+                  {
+                    if (data.success == 'true') {
+                      //waitingDialog.hide();
+                      htmlContent = '<option value="" disabled selected>Choose your slate</option>';
+                      if (data.slates && data.slates.data && data.slates.data.slots && data.slates.data.slots.length > 0) {
+                        console.log(data.slates);
+                        var slots = data.slates.data.slots;
+                        slates = slots;
+                        for (var i = 0, len = slots.length; i < len; i++) {
+                          htmlContent += '<option value="' + slots[i].id + '">' + slots[i].title.replace('vs', '@') + ' from ' + slots[i].start_date + ' to ' + slots[i].end_date + '</option>';
+                        }
+                      }
+                      $('#slates').html(htmlContent);
+                      $('#slates').material_select('destroy');
+                      $('#slates').material_select();
+                      $('#slates').unbind('change')
+                      $('#slates').on('change', function (obj) {
+                        // do something…
+                        console.log(obj.currentTarget.value);
+                        slate = obj.currentTarget.value;
+                        
+                        filterGamesBySlate(slate);
+                        //load_week(year, week, site, obj.currentTarget.value, season, reload);
+                        //loadSeasonData();
+                      });
+                      console.log(data);
+                    } else {
+                      //waitingDialog.hide();
+                      alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                    }
+                  },
+                  error: function(data)
+                  {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.statusText); // show error
+                  },
+                });
+                // e.preventDefault(); // avoid to execute the actual submit of the form.
+            }
+        }
+        /* END OF getSlates */
+        
+        
+        function filterGamesBySlate(slateId) {
+            var url = "/nfl_research/get_slate_games/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              slateid: slateId,
+              week: week,
+              year: year,
+              site: site,
+              season: season, /* REG, POST, PRE */
+              reload: reload,
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                console.log(data);
+                if (data.success == 'true') {
+                    if (data.games && data.games.data && data.games.data.games && data.games.data.games.length > 0) {
+                        var theseGames = data.games.data.games;
+                        var gameElem = null;
+                        for (var i = 0, len = theseGames.length; i < len; i++) {
+                            console.log(theseGames[i]);
+                            var gameInfo = theseGames[i].gameInfo; 
+                            //NOTE: This is stupidly reversed in API so GB@MIN is actually MIN@GB
+                            //If they ever fix this in API then we need to update this logic or it won't work and will break
+                        
+                            var gameInfoArr = gameInfo.split('@');
+                            if (gameInfoArr.length == 2) {
+                                $('.filter-box').hide(); //Hide all the games first
+                                var gameInfoSel = '.' + gameInfoArr[1] + '-at-' + gameInfoArr[0];
+                                var gameInfoSel2 = '.' + gameInfoArr[0] + '-at-' + gameInfoArr[1]; //Backup incase they ever fix it
+                                $(gameInfoSel).show();
+                                $(gameInfoSel2).show();
+                                gameElem = $(gameInfoSel);
+                            }
+                        
+                        }
+                        if (theseGames.length == 1 && gameElem) {
+                            //Only 1 game so lets auto-select it.
+                            gameClicked(gameElem);
+                        }
+                
+                    } else {
+                      //waitingDialog.hide();
+                      alert("There was an error loading data: " + data); // show response from the python script.
+                    }
+                } else {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+
+        }
+        
+        function getSlatePlayers() {
+            if (slate != '' && year != '' && week != '') {
+                var url = "/nfl_research/get_slate_players/"; // the script where you handle the form input.
+                //waitingDialog.show('Please wait while this weeks stats are loaded');
+                var thisData = {
+                  slateid: slate,
+                  week: week,
+                  year: year,
+                  site: site,
+                  season: season, /* REG, POST, PRE */
+                  reload: 'true', /* always get latest */
+                  csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                };
+                $.ajax({
+                  context: this,
+                  type: "POST",
+                  url: url,
+                  data: thisData, 
+                  beforeSend: function() {
+                     $('#loader').show();
+                     $('#loader').addClass('show');
+                  },
+                  complete: function(){
+                     $('#loader').removeClass('show');
+                     $('#loader').hide();
+                  },
+                  success: function(data)
+                  {
+                    console.log(data);
+                    if (data.success == 'true') {
+                        if (data.players && data.players.data && data.players.data.players && data.players.data.players.length > 0) {
+                            var thesePlayers = data.players.data.players;
+                            dfsArmyPlayerProjs = thesePlayers;
+                            dfsArmyPlayerProjsObj = {};
+                            for (var i=0; i < dfsArmyPlayerProjs.length; i++) {
+                                var thisPlayer = dfsArmyPlayerProjs[i];
+                                var playerName = thisPlayer.name;
+                                var playerNameArr = playerName.split(' ');
+                                if (playerNameArr.length > 1) {
+                                    playerName = playerNameArr[0].slice(0,1) + '.' + playerNameArr.slice(1, playerNameArr.length).join(' ');
+                                }
+                                var lookupKey = playerName + '_' + thisPlayer.team + '_' + thisPlayer.positionName;
+                                dfsArmyPlayerProjsObj[lookupKey] = thisPlayer;
+                            }
+                            loadSeasonData();
+                        } else {
+                          //waitingDialog.hide();
+                          alert("There was an error loading data: " + data); // show response from the python script.
+                        }
+                    } else {
+                        //waitingDialog.hide();
+                        alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                    }
+                  },
+                  error: function(data)
+                  {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.statusText); // show error
+                  },
+                });
+            } else if (year != '' && week != '') {
+                loadSeasonData(); //Just putting this here for now - so I can see data on non-showdown games
+            }
+        }
+        
+        /* 
+          Loads this weeks stats if not already loaded
+        */
+        function load_week(year, week, site, slate, season, reload) {
+            var url = "/nfl_research/load_week/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              week: week,
+              slate: slate,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              reload: reload, /* set to true to force reload of week data */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (data.success == 'true') {
+                  //waitingDialog.hide();
+                  setColumnHeadersBasedOnJSON(data.firstObj)
+                  $("#tabulator-table").tabulator("setData", data.file);
+                  setTimeout(function(){
+                    setColumnHeadersBasedOnJSON(data.firstObj)
+                  }, 1000);
+                  //setTimeout(setColumnHeadersBasedOnJSON(data.firstObj), 10000);
+                  console.log(data);
+                } else {
+                  if (data.errorMsg && data.errorMsg.indexOf("Error:21") >= 0) {
+                    //We have an error with getting existing player data for week - so we need to reload and try again.
+                    start_update_weekdata_for_team_request(0, 'true');
+                  } else {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                  }
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+
+        function load_season_data(year, season, site, game) {
+            var url = "/nfl_research/load_season/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              season: season, /* REG, PRE, POST */
+              site: site,
+              game: game, 
+              reload: reload,
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                console.log(data);
+                if (data && data.success == '') {
+                    alert(data.errorMsg);
+                } else if (data.tableData) {
+                    //setColumnHeadersBasedOnJSON(data.tableData[0]);
+                    currentlyLoadedTableData = updateDataWithTree(data.tableData);
+                    //currentlyLoadedTableData = data.tableData;
+                    reloadData(); //does what is below.
+                    //$("#tabulator-table").tabulator("setData", currentlyLoadedTableData);
+                    /*setTimeout(function(){
+                      setColumnHeadersBasedOnJSON(data.tableData[0]);
+                    }, 1000);*/
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+
+        function getAverageCellValue(value, rowData) {
+            var numGames = rowData.Played || 0;
+            if (numGames <= 0) {
+                return 0;
+            }
+            
+            var avgVal = ((value && value!="") ? value : 0) / numGames;
+            avgVal = Math.round((avgVal + Number.EPSILON) * 10) / 10
+
+            return avgVal;
+        }
+
+        function updateRowWithAverages(rowData) {
+            rowData.FantasyPointsDraftKings = getAverageCellValue(rowData.FantasyPointsDraftKings, rowData);
+            rowData.FantasyPointsFanDuel = getAverageCellValue(rowData.FantasyPointsFanDuel, rowData);
+
+            rowData.PassingAttempts = getAverageCellValue(rowData.PassingAttempts, rowData);
+            rowData.PassingCompletions = getAverageCellValue(rowData.PassingCompletions, rowData);
+            rowData.PassingYards = getAverageCellValue(rowData.PassingYards, rowData);
+            rowData.PassingTouchdowns = getAverageCellValue(rowData.PassingTouchdowns, rowData);
+            rowData.RushingAttempts = getAverageCellValue(rowData.RushingAttempts, rowData);
+            rowData.RushingYards = getAverageCellValue(rowData.RushingYards, rowData);
+            rowData.RushingTouchdowns = getAverageCellValue(rowData.RushingTouchdowns, rowData);
+            rowData.ReceivingTargets = getAverageCellValue(rowData.ReceivingTargets, rowData);
+            rowData.Receptions = getAverageCellValue(rowData.Receptions, rowData);
+            rowData.ReceivingYards = getAverageCellValue(rowData.ReceivingYards, rowData);
+            rowData.ReceivingTouchdowns = getAverageCellValue(rowData.ReceivingTouchdowns, rowData);
+            rowData.Sacks = getAverageCellValue(rowData.Sacks, rowData);
+            rowData.FumblesLost = getAverageCellValue(rowData.FumblesLost, rowData);
+            rowData.FumblesRecovered = getAverageCellValue(rowData.FumblesRecovered, rowData);
+            rowData.PassingInterceptions = getAverageCellValue(rowData.PassingInterceptions, rowData);
+            rowData.Interceptions = getAverageCellValue(rowData.Interceptions, rowData);
+
+            return rowData;
+        }
+        function updateDataWithTree(tableData) {
+            for (var i=0; i < tableData.length; i++) {
+                var rawRow = updateRowWithAverages(tableData[i]);
+                var thisRow = JSON.parse(JSON.stringify(rawRow)); //copy obj since we can't assign same or we loop
+                updateRowWithProjections(tableData[i]); //Must call this AFTER making a copy above
+                thisRow.PlayerID = roundNum(parseFloat(thisRow.PlayerID) + 0.1); //append .1 to this row's ID so it is still unique
+                thisRow.Name = 'SeasonAvg - ' + thisRow.Name;
+                tableData[i]['_children'] = thisRow;
+            }
+        
+            return tableData;
+        }
+        function refreshProjectionsInData(tableData) {
+            for (var i=0; i < tableData.length; i++) {
+                updateRowWithProjections(tableData[i]); //Must call this AFTER making a copy above
+            }
+        
+            return tableData;
+        }
+        function updateRowWithProjections(rowData) {
+            /*
+            // Note: we only need these projections from sportsdata to calculate a touch share % - but we will
+            // apply that percentage to the Team Projections to come up with individual projections.
+            rowData.PassingAttempts = getProjectionForKey(rowData, 'PassingAttempts');
+            rowData.PassingTouchdowns = getProjectionForKey(rowData, 'PassingTouchdowns');
+            rowData.RushingAttempts = getProjectionForKey(rowData, 'RushingAttempts');
+            rowData.RushingTouchdowns = getProjectionForKey(rowData, 'RushingTouchdowns');
+            rowData.ReceivingTargets = getProjectionForKey(rowData, 'ReceivingTargets');
+            rowData.ReceivingTouchdowns = getProjectionForKey(rowData, 'ReceivingTouchdowns');
+            */
+            
+            rowData.PassingAttemptsShare = getProjectionShareForKey(rowData, 'PassingAttempts');
+            rowData.PassingTouchdownsShare = getProjectionShareForKey(rowData, 'PassingTouchdowns');
+            rowData.RushingAttemptsShare = getProjectionShareForKey(rowData, 'RushingAttempts');
+            rowData.RushingTouchdownsShare = getProjectionShareForKey(rowData, 'RushingTouchdowns');
+            rowData.ReceivingTargetsShare = getProjectionShareForKey(rowData, 'ReceivingTargets');
+            rowData.ReceivingTouchdownShares = getProjectionShareForKey(rowData, 'ReceivingTouchdowns');
+            
+            
+            var teamControls = $('.team-controls-'+rowData.Team);
+            rowData.PassingAttempts = roundNum(parseFloat($('.pass-att', teamControls).val()) * (rowData.PassingAttemptsShare / 100.0));
+            rowData.CompletionPercentage = roundNum($('.comp-perc', teamControls).val());
+            rowData.PassingCompletions = roundNum(rowData.PassingAttempts * (rowData.CompletionPercentage / 100.0));
+            rowData.PassingYardsPerCompletion = (rowData.PassingAttemptsShare > 0) ? (roundNum($('.yds-per-rec', teamControls).val())) : 0;
+            rowData.PassingYards = roundNum(rowData.PassingCompletions * rowData.PassingYardsPerCompletion);
+            rowData.PassingTouchdowns = roundNum(parseFloat($('.pass-tds', teamControls).val()) * (rowData.PassingTouchdownsShare / 100.0));
+
+            rowData.RushingAttempts = roundNum(parseFloat($('.rush-att', teamControls).val()) * (rowData.RushingAttemptsShare / 100.0));
+            rowData.RushingYardsPerAttempt = (rowData.RushingAttemptsShare >= 1) ? (roundNum($('.yds-per-rush', teamControls).val())) : 0;
+            rowData.RushingYards = roundNum(rowData.RushingAttempts * rowData.RushingYardsPerAttempt);
+            rowData.RushingTouchdowns = roundNum(parseFloat($('.rush-tds', teamControls).val()) * (rowData.RushingTouchdownsShare / 100.0));
+
+            rowData.ReceivingTargets = roundNum(parseFloat($('.pass-att', teamControls).val()) * (rowData.ReceivingTargetsShare / 100.0));
+            rowData.Receptions = roundNum(parseFloat($('.pass-comp', teamControls).val()) * (rowData.ReceivingTargetsShare / 100.0));
+            rowData.ReceivingYardsPerReception = (rowData.ReceivingYardsPerReception <= 2.0 && rowData.ReceivingTargetsShare >= 1) ? (roundNum($('.yds-per-rec', teamControls).val())) : rowData.ReceivingYardsPerReception;
+            rowData.ReceivingYards = roundNum(rowData.Receptions * rowData.ReceivingYardsPerReception);
+            rowData.ReceivingTouchdowns = roundNum(parseFloat($('.pass-tds', teamControls).val()) * (rowData.ReceivingTouchdownShares / 100.0));
+
+        }        
+        function getProjectionForKey(data, keyVal) {
+            var lookupKey = data.PlayerID;
+            if (lookupKey in playerProjData) {
+                thisProjPlayer = playerProjData[lookupKey];
+                if (thisProjPlayer[keyVal] == '') {
+                    return 0;
+                }
+                var playerVal = parseFloat(thisProjPlayer[keyVal]);
+                if (isNaN(playerVal) || playerVal == 0) {
+                    return 0;
+                } else {
+                    return roundNum(playerVal);
+                }
+            }
+
+            return 0;
+        }
+        function getProjectionShareForKey(data, keyVal) {
+            var lookupKey = data.PlayerID;
+            if (lookupKey in playerProjData) {
+                thisProjPlayer = playerProjData[lookupKey];
+                if (thisProjPlayer[keyVal] == '') {
+                    return 0;
+                }
+                var playerVal = parseFloat(thisProjPlayer[keyVal]);
+                var totalVal = parseFloat(projTotalsObj[thisProjPlayer.Team][keyVal]);
+                if (isNaN(totalVal) || isNaN(playerVal) || playerVal == 0) {
+                    return 0;
+                } else {
+                    return roundNum((playerVal / totalVal) * 100);
+                }
+            }
+
+            return 0;
+        }
+        
+        /* 
+          Loads last weeks data if not already loaded for each team
+        */
+        const NFL_TEAMS = ['ARI','ATL','BAL','BUF','CAR','CHI','CIN','CLE','DAL','DEN','DET','GB','HOU','IND','JAX','KC','LAC','LAR','MIA','MIN','NE','NO','NYG','NYJ','OAK','PHI','PIT','SEA','SF','TB','TEN','WAS'];
+
+        function start_update_weekdata_for_team_request(teamIndex, reload) {
+          update_weekdata_for_team_request(year, week, site, season, reload, teamIndex);
+        }
+        function update_weekdata_for_team_request(year, week, site, season, reload, teamIndex) {
+            var url = "/nfl_research/update_weekdata_for_team_request/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              week: week,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              team: NFL_TEAMS[teamIndex], /* 3 letter team initial - JAX not JAC */
+              reload: reload, /* set to true to force reload of week data */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                if (teamIndex == 0) {
+                  $('#loader').show();
+                  $('#loader').addClass('show');
+                }
+              },
+              complete: function(){
+                if (teamIndex >= 31) {
+                  $('#loader').removeClass('show');
+                  $('#loader').hide();
+                }
+              },
+              success: function(data)
+              {
+                if (data.success == 'true') {
+                  console.log(data);
+                  teamIndex += 1;
+                  if (teamIndex < 32) {
+                    start_update_weekdata_for_team_request(teamIndex, reload);
+                  } else {
+                    //Reload week data after we update all team data for week
+                    if ($("#slates").val() && $("#slates").val() != '') {
+                      load_week(year, week, site, $("#slates").val(), season, reload);
+                    }
+                  }
+                } else {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                  $('#loader').removeClass('show');
+                  $('#loader').hide();
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+                $('#loader').removeClass('show');
+                $('#loader').hide();
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }  
+           
+        function get_current_week() {
+            var url = "/nfl_research/get_current_week/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 //$('#loader').show();
+                 //$('#loader').addClass('show');
+              },
+              complete: function(){
+                 //$('#loader').removeClass('show');
+                 //$('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (data && data.success == '') {
+                    alert(data.errorMsg);
+                } else if (data.currentWeek) {
+                    console.log(data);
+                    var weekInt = parseInt(data.currentWeek);
+                    currentweek = '' + data.currentWeek;
+                    week = '' + data.currentWeek;
+                    if (weekInt <= 17) {
+                        $("#seasons").val('REG');
+                        season = 'REG';
+                        $("#weeks").val('' + data.currentWeek);
+                    } else {
+                        $("#seasons").val('POST');
+                        season = 'POST';
+                        $("#weeks").val('' + data.currentWeek);
+                    }
+                    $('#seasons').material_select(); //Must reinit for some dumb reason
+                    $('#weeks').material_select(); //Must reinit for some dumb reason
+                    getTeamSeasonStats();
+                    getGamesForWeek();
+                    getSlates();
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error getting current week: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+           
+        function get_current_season() {
+            var url = "/nfl_research/get_current_season/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 //$('#loader').show();
+                 //$('#loader').addClass('show');
+              },
+              complete: function(){
+                 //$('#loader').removeClass('show');
+                 //$('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (data && data.success == '') {
+                    alert(data.errorMsg);
+                } else if (data.currentSeason) {
+                    console.log(data);
+                    year = '' + data.currentSeason;
+                    $("#years").val('' + data.currentSeason);
+                    $('#years').material_select(); //Must reinit for some dumb reason
+                    getTeamSeasonStats();
+                    getGamesForWeek();
+                    getSlates();
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error getting current season: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+        
+        
+        function getTeamSeasonStats() {
+            if (year != '' && season != '') {   
+                var url = "/nfl_research/get_team_season_stats/"; // the script where you handle the form input.
+                //waitingDialog.show('Please wait while this weeks stats are loaded');
+                var thisData = {
+                  year: year,
+                  site: site,
+                  season: season, /* REG, POST, PRE */
+                  reload: reload, /* set to true to force reload of week data */
+                  csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                };
+                $.ajax({
+                  context: this,
+                  type: "POST",
+                  url: url,
+                  data: thisData, 
+                  beforeSend: function() {
+                     $('#loader').show();
+                     $('#loader').addClass('show');
+                  },
+                  complete: function(){
+                     $('#loader').removeClass('show');
+                     $('#loader').hide();
+                  },
+                  success: function(data)
+                  {
+                    if (data && data.success == '') {
+                        alert(data.errorMsg);
+                    } else if (data.teamSeasonData) {
+                        console.log(data);
+                        allTeamSeasonData = data.teamSeasonData
+                        //reloadData();
+                    }
+                  },
+                  error: function(data)
+                  {
+                    //waitingDialog.hide();
+                    alert("There was an error getting current season: " + data.statusText); // show error
+                  },
+                });
+            }
+        }
+      
+        function getTeamsProjections() {
+             getTeamProjections(homeTeam, 'home');
+             getTeamProjections(awayTeam, 'away');
+        }
+        function getTeamProjections(thisTeam, homeOrAway) {
+            if (year != '' && season != '') {   
+                var url = "/nfl_research/get_team_projections/"; // the script where you handle the form input.
+                //waitingDialog.show('Please wait while this weeks stats are loaded');
+                var thisData = {
+                  year: year,
+                  week: week,
+                  team: thisTeam,
+                  season: season, /* REG, POST, PRE */
+                  reload: true, /* forcing this to reload always so we always have latest projections */ 
+                  csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                };
+                $.ajax({
+                  context: this,
+                  type: "POST",
+                  url: url,
+                  data: thisData, 
+                  beforeSend: function() {
+                     $('#loader').show();
+                     $('#loader').addClass('show');
+                  },
+                  complete: function(){
+                     $('#loader').removeClass('show');
+                     $('#loader').hide();
+                  },
+                  success: function(data)
+                  {
+                    if (data && data.success == '') {
+                        alert(data.errorMsg);
+                    } else if (data.projData) {
+                        console.log(data);
+                        prepareTeamProjections(data.projData, homeOrAway);
+                        //reloadData();
+                    }
+                  },
+                  error: function(data)
+                  {
+                    //waitingDialog.hide();
+                    alert("There was an error getting current season: " + data.statusText); // show error
+                  },
+                });
+            }
+        }
+        
+        function prepareTeamProjections(projData, homeOrAway) {
+            if (homeOrAway == 'home') {
+                homeProjData = projData;
+                projTotalsObj[homeTeam] = {
+                    'PassingAttempts': 0,
+                    'RushingAttempts': 0,
+                    'ReceivingTargets': 0,
+                    'ReceivingTouchdowns': 0,
+                    'RushingTouchdowns': 0,
+                    'PassingTouchdowns': 0
+                };
+            } else {
+                awayProjData = projData;
+                projTotalsObj[awayTeam] = {
+                    'PassingAttempts': 0,
+                    'RushingAttempts': 0,
+                    'ReceivingTargets': 0,
+                    'ReceivingTouchdowns': 0,
+                    'RushingTouchdowns': 0,
+                    'PassingTouchdowns': 0
+                };    
+            }
+        
+            for (var i=0; i < projData.length; i++) {
+                var playerProj = projData[i];
+                playerProjData[playerProj.PlayerID] = playerProj;
+                projTotalsObj[playerProj.Team].PassingAttempts += playerProj.PassingAttempts;
+                projTotalsObj[playerProj.Team].RushingAttempts += playerProj.RushingAttempts;
+                projTotalsObj[playerProj.Team].ReceivingTargets += playerProj.ReceivingTargets;
+                projTotalsObj[playerProj.Team].ReceivingTouchdowns += playerProj.ReceivingTouchdowns;
+                projTotalsObj[playerProj.Team].RushingTouchdowns += playerProj.RushingTouchdowns;
+                projTotalsObj[playerProj.Team].PassingTouchdowns += playerProj.PassingTouchdowns;
+            }
+
+            if (homeOrAway == 'home') {
+                if (awayProjData.length > 0) {
+                    getSlatePlayers();
+                }
+            } else {
+                if (homeProjData.length > 0) {
+                    getSlatePlayers();
+                }   
+            }
+        }
+        
+        function getGamesForWeek() {
+            if (year != '' && week != '') {   
+                var url = "/nfl_research/get_current_week_games/"; // the script where you handle the form input.
+                //waitingDialog.show('Please wait while this weeks stats are loaded');
+                var thisData = {
+                  year: year,
+                  week: week,
+                  site: site,
+                  season: season, /* REG, POST, PRE */
+                  reload: reload, /* set to true to force reload of week data */
+                  csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                };
+                $.ajax({
+                  context: this,
+                  type: "POST",
+                  url: url,
+                  data: thisData, 
+                  beforeSend: function() {
+                     $('#loader').show();
+                     $('#loader').addClass('show');
+                  },
+                  complete: function(){
+                     $('#loader').removeClass('show');
+                     $('#loader').hide();
+                  },
+                  success: function(data)
+                  {
+                    if (data && data.success == '') {
+                        alert(data.errorMsg);
+                    } else if (data.weekGameData) {
+                        console.log(data);
+                        displayGames(data.weekGameData);
+                        //reloadData();
+                    }
+                  },
+                  error: function(data)
+                  {
+                    //waitingDialog.hide();
+                    alert("There was an error getting current season: " + data.statusText); // show error
+                  },
+                });
+            }
+        }
+        
+        function displayGames(gamesData) {
+            $('.gamesContainer').empty();
+            $(gamesData).each(function(index, gameData) {
+                //console.log(gameData);
+                var homeSpread = parseFloat(gameData.PointSpread);
+                var awaySpread = homeSpread * -1.0;
+                var ouText = 'Total: ' + gameData.OverUnder;
+                var overUnder = parseFloat(gameData.OverUnder);
+                var ouColor = 'rgb(255, 100, 100)';
+                if (overUnder < 40.0) {
+                    ouColor = 'rgb(255, 180, 114)';
+                } else if (overUnder < 42.0) {
+                    ouColor = 'rgb(250, 188, 124)';
+                } else if (overUnder < 44.0) {
+                    ouColor = 'rgb(242, 192, 134)';
+                } else if (overUnder < 46.0) {
+                    ouColor = 'rgb(246, 216, 142)';
+                } else if (overUnder < 48.0) {
+                    ouColor = 'rgb(220, 230, 148)';
+                } else if (overUnder < 50.0) {
+                    ouColor = 'rgb(190, 220, 146)';
+                } else if (overUnder >= 50.0) {
+                    ouColor = 'rgb(100, 190, 140)';
+                } else {
+                    ouText = gameData.Status;
+                }
+                var gameTime = getContextualDate(gameData.DateTime);
+                
+                $('.gamesContainer').append('' +
+                '   <div class="filter-box ' + gameData.AwayTeam + '-at-' + gameData.HomeTeam + '" data-home="' + gameData.HomeTeam + '" data-away="' + gameData.AwayTeam + '" data-ou="' + gameData.OverUnder + '" data-homespread="' + homeSpread + '" data-awayspread="' + awaySpread + '">' +
+                '       <div class="filter-box-top clearfix">' +
+                '           <div class="filter-players-games active away-team-wrap">' +
+                '               <div class="team">' +
+                '                   <div class="team-logo">' +
+                '                       <img src="/static/img/svg/' + gameData.AwayTeam.toLowerCase() + '.svg" alt="' + gameData.AwayTeam + '" title="' + gameData.AwayTeam + '">' +
+                '                   </div>' +
+                '               </div>' +
+                '               <span class="spread-text">Spread: <strong>' + awaySpread + '</strong></span>' +
+                '           </div>' +
+                '           <div class="filter-players-games active home-team-wrap">' +
+                '               <div class="team">' +
+                '                   <div class="team-logo">' +
+                '                       <img src="/static/img/svg/' + gameData.HomeTeam.toLowerCase() + '.svg" alt="' + gameData.HomeTeam + '" title="' + gameData.HomeTeam + '">' +
+                '                   </div>' +
+                '               </div>' +
+                '               <span class="spread-text">Spread: <strong>' + homeSpread + '</strong></span>' +
+                '           </div>' +
+                '           <span class="vs-text">@</span>' +
+                '       </div>' +
+                '       <div class="filter-box-bottom">' +
+                '           <span class="game-time">' + gameTime + '</span>' +
+                '           <div class="total-text" style="background-color: ' + ouColor + ';">' + ouText + '</div>' +
+                '       </div>' +
+                '   </div>');
+            });
+            $('.filter-box').click(function() {
+                var gameElem = $(this);
+                gameClicked(gameElem);
+            });
+        }
+        
+        function gameClicked(gameElem) {
+            if (gameElem.hasClass('active-filter')) {
+                gameElemLastSelected = null;
+                $('.filter-box').removeClass('inactive-filter');
+                gameElem.removeClass('active-filter');
+                homeTeam = '';
+                awayTeam = '';
+                $("#tabulator-table").tabulator("clearFilter");
+            } else {
+                gameElemLastSelected = gameElem;
+                $('.filter-box').removeClass('active-filter');
+                $('.filter-box').addClass('inactive-filter');
+                gameElem.removeClass('inactive-filter');
+                gameElem.addClass('active-filter');
+
+                // filter table
+                homeTeam = gameElem.attr('data-home');
+                awayTeam = gameElem.attr('data-away');
+                updateActiveGame(gameElem);
+                $('#main-controls-wrap').hide();
+                $('.selected-game-wrap').show();
+                $("#tabulator-table").tabulator("setFilter", "Team", "in", [homeTeam, awayTeam]);
+            }
+        }
+
+        function updateActiveGame(selectedElem) {
+            awayProjData = [];
+            homeProjData = [];
+            projTotalsObj = {};
+
+            loadGameData();
+            getTeamsProjections();
+            
+            $('#game-controls-away .team-initials b').html(awayTeam);
+            $('#game-controls-home .team-initials b').html(homeTeam);
+            var awayControls = $('#game-controls-away');
+            var homeControls = $('#game-controls-home');
+            awayControls.removeClass();
+            homeControls.removeClass();
+            awayControls.addClass('game-controls team-controls-'+awayTeam);
+            homeControls.addClass('game-controls team-controls-'+homeTeam);
+            
+            var overUnder = parseFloat(selectedElem.data('ou'));
+            var homeSpread = parseFloat(selectedElem.data('homespread'));
+            var awaySpread = parseFloat(selectedElem.data('awayspread'));
+            /* 
+            homeScore + awayScore = overUnder;
+            homeScore = awaySpread + awayScore
+            awayScore = (overUnder - awaySpread) / 2.0;
+            */
+            var awayScore = (overUnder - awaySpread) / 2.0;
+            var homeScore = overUnder - awayScore;
+            $('#game-controls-away .vegas-info b').html(awayScore);
+            $('#game-controls-home .vegas-info b').html(homeScore);
+            
+            var friendlySiteName = 'DraftKings';
+            if (site == 'DK') {
+                friendlySiteName = 'DraftKings';
+            } else if (site == 'Fanduel') {
+                friendlySiteName = 'Fanduel';
+            }
+            $('.filter-box-selected .website-name').html(friendlySiteName);
+            $('.filter-box-selected .filter-box-top').html($('.filter-box-top', selectedElem).html());
+            $('.filter-box-selected .game-time').html($('.game-time', selectedElem).html());
+            $('.filter-box-selected .total-text').html($('.total-text', selectedElem).html());
+            $('.filter-box-selected .total-text').css('background-color', $('.total-text', selectedElem).css('background-color'));
+            $('.filter-box-selected .season-week-label').html(year + ' ' + season + ' - Week ' + week);            
+        }
+
+        function loadGameData() {
+            for (i=0; i<allTeamSeasonData.length; i++) {
+                var thisTeam = allTeamSeasonData[i];
+                if (thisTeam.Team == awayTeam) {
+                    awayTeamStats = thisTeam
+                }
+                if (thisTeam.Team == homeTeam) {
+                    homeTeamStats = thisTeam
+                }
+            }
+            
+            loadTeamData('away', awayTeam, awayTeamStats);
+            loadTeamData('home', homeTeam, homeTeamStats);
+        }
+        
+        function seasAvg(games, val) {
+            var returnVal = 0;
+            try {
+                var thisVal = parseFloat(val);
+                var thisGames = parseFloat(games);
+                if (thisGames > 0) {
+                    returnVal = thisVal / thisGames;
+                    returnVal = Math.round((returnVal + Number.EPSILON) * 10) / 10
+                    return returnVal;
+              } else {
+                return 0;
+              }
+            } catch (error) {
+              console.error(error);
+              return returnVal;
+            }
+            return returnVal;
+        }
+        
+        // 10 for tenths, 100 for hundredths
+        function roundNum(num, decm = 10) {
+            return Math.round((parseFloat(num) + Number.EPSILON)*decm)/decm;
+        }
+        function avgNums(numArr, decm = 10) {
+            var arrTot = 0;
+            for (var i=0; i < numArr.length; i++) {
+                arrTot += parseFloat(numArr[i] || 0);
+            }
+            var num = parseFloat(arrTot) / parseFloat(numArr.length);
+            return roundNum(num, decm);
+        }
+        /*
+            : (((ATL_PassYardsPerGameAvg - ATL_OppsPassYardsAllowPerGameAvg) + CAR_PassingYardsAllowedPerGame) +
+            ((CAR_PassingYardsAllowedPerGame - CAR_OppPassYardsPerGameAvg) + ATL_PassingYardsPerGame)) / 2
+            
+            : (((team1OrigVal - team1OppsAvgAllowedVal) + team2AllowedVal) +
+            ((team2AllowedVal - team2OppsAvgOrigVal) + team1OrigVal)) / 2
+        */   
+        // pass in the selector and the original team value for row and the teams allowed value
+        function fillTeamRowFancy(awayOrHome, thisSelector, team1OrigVal, team1OppsAvgAllowedVal, team1AllowedVal, team1OppsAvgOrigVal) {
+            var awayOrHomeSelector = '#game-controls-home';
+            var oppSelector = "#game-controls-away";
+            if (awayOrHome == 'away') {
+                awayOrHomeSelector = '#game-controls-away';
+                oppSelector = "#game-controls-home";
+            }
+
+            $(awayOrHomeSelector + ' ' + thisSelector + '-orig').val(team1OrigVal);
+            $(awayOrHomeSelector + ' ' + thisSelector + '-orig').data('OppsAvgAllowedVal', team1OppsAvgAllowedVal);
+            if (team1AllowedVal == null) {
+                $(awayOrHomeSelector + ' ' + thisSelector).val(team1OrigVal);
+            } else {
+                $(oppSelector + ' ' + thisSelector + '-allowed').val(team1AllowedVal);
+                $(oppSelector + ' ' + thisSelector + '-allowed').data('OppsAvgOrigVal', team1OppsAvgOrigVal);
+                
+                
+                team2AllowedVal = $(awayOrHomeSelector + ' ' + thisSelector + '-allowed').val();
+                team2OppsAvgOrigVal = $(awayOrHomeSelector + ' ' + thisSelector + '-allowed').data('OppsAvgOrigVal');
+                
+                var team1Adj = ((team1OrigVal - team1OppsAvgAllowedVal) + team2AllowedVal);
+                var team2AllowedAdj = ((team2AllowedVal - team2OppsAvgOrigVal) + team1OrigVal);
+                var team1Final = avgNums([team1Adj, team2AllowedAdj]);
+                $(awayOrHomeSelector + ' ' + thisSelector).val(team1Final);
+
+
+                team2OrigVal = $(oppSelector + ' ' + thisSelector + '-orig').val();
+                team2OppsAvgAllowedVal = $(oppSelector + ' ' + thisSelector + '-orig').data('OppsAvgAllowedVal');
+
+                var team2Adj = ((team2OrigVal - team2OppsAvgAllowedVal) + team1AllowedVal);
+                var team1AllowedAdj = ((team1AllowedVal - team1OppsAvgOrigVal) + team2OrigVal);
+                var team2Final = avgNums([team2Adj, team1AllowedAdj]);
+                $(oppSelector + ' ' + thisSelector).val(team2Final);
+            }
+        }
+   
+        
+        // pass in the selector and the original team value for row and the teams allowed value
+        function fillTeamRow(awayOrHome, thisSelector, origVal, allowedVal) {
+            var awayOrHomeSelector = '#game-controls-home';
+            var oppSelector = "#game-controls-away";
+            if (awayOrHome == 'away') {
+                awayOrHomeSelector = '#game-controls-away';
+                oppSelector = "#game-controls-home";
+            }
+
+            $(awayOrHomeSelector + ' ' + thisSelector + '-orig').val(origVal);
+            if (allowedVal == null) {
+                $(awayOrHomeSelector + ' ' + thisSelector).val(roundNum(origVal));
+            } else {
+                $(oppSelector + ' ' + thisSelector + '-allowed').val(roundNum(allowedVal));
+                $(awayOrHomeSelector + ' ' + thisSelector).val(avgNums([origVal, $(awayOrHomeSelector + ' ' + thisSelector + '-allowed').val()]));
+                $(oppSelector + ' ' + thisSelector).val(avgNums([$(oppSelector + ' ' + thisSelector + '-orig').val(), allowedVal]));
+            }
+        }
+        
+        function loadTeamData(awayOrHome, teamName, teamStats) {
+            var awayOrHomeSelector = '#game-controls-home';
+            var oppSelector = "#game-controls-away";
+            if (awayOrHome == 'away') {
+                awayOrHomeSelector = '#game-controls-away';
+                oppSelector = "#game-controls-home";
+            }
+            /* NOTES FROM Spreadsheet   
+                PERCENT PASS:
+                PERCENT RUN:
+                TEAM SNAPS:
+                TDs:
+                FIELD GOALS:
+                PUNTS:
+                TOTAL DRIVES:
+                TURNOVERS
+                PASS SUCCESS:
+                RUSH YRD/CARRY:
+                PASS ATT:
+                PASS COMP:
+                RUSH ATT:
+                RUSH YARDS:
+                Pass Yards:
+                Pass TD
+                Rush TD
+            */
+            
+            
+            // OFFENSIVE STATS
+            var GamesPlayed = parseInt(teamStats.Games);
+            var RushingTouchdowns = seasAvg(GamesPlayed, teamStats.RushingTouchdowns);
+            var RushingAttempts = seasAvg(GamesPlayed, teamStats.RushingAttempts);
+            var RushingYards = seasAvg(GamesPlayed, teamStats.RushingYards);
+            var RushingYardsPerAttempt = parseFloat(teamStats.RushingYardsPerAttempt);
+            var PassingAttempts = seasAvg(GamesPlayed, teamStats.PassingAttempts);
+            var PassingCompletions = seasAvg(GamesPlayed, teamStats.PassingCompletions);
+            var PassingYards = seasAvg(GamesPlayed, teamStats.PassingYards);
+            var TimesSackedYards = seasAvg(GamesPlayed, teamStats.TimesSackedYards);
+            PassingYards = roundNum(PassingYards + TimesSackedYards); //For some idiotic reason sportsdata deducts sacked yards from total passing yards
+            //var PassingYardsPerCompletion = parseFloat(teamStats.PassingYardsPerCompletion);
+            var PassingYardsPerCompletion = roundNum(PassingYards / PassingCompletions);
+            var PassingTouchdowns = seasAvg(GamesPlayed, teamStats.PassingTouchdowns);
+            var CompletionPercentage = parseFloat(teamStats.CompletionPercentage);
+            var OffensivePlays = seasAvg(GamesPlayed, teamStats.OffensivePlays);
+            var FieldGoalAttempts = seasAvg(GamesPlayed, teamStats.FieldGoalAttempts);
+            var FieldGoalsMade = seasAvg(GamesPlayed, teamStats.FieldGoalsMade);
+            var FieldGoalSuccess = roundNum(((parseFloat(teamStats.FieldGoalsMade) / parseFloat(teamStats.FieldGoalAttempts)) * 100) || 0);
+            var FumblesLost = seasAvg(GamesPlayed, teamStats.FumblesLost);
+            var Giveaways = seasAvg(GamesPlayed, teamStats.Giveaways);
+            var PassingInterceptions = seasAvg(GamesPlayed, teamStats.PassingInterceptions);
+            var Punts = seasAvg(GamesPlayed, teamStats.Punts);
+            var TimesSacked = seasAvg(GamesPlayed, teamStats.TimesSacked);
+            var OUScore = seasAvg(GamesPlayed, teamStats.TotalScore);
+            var Score = seasAvg(GamesPlayed, teamStats.Score);
+
+            // DEFENSIVE STATS
+            var Sacks = seasAvg(GamesPlayed, teamStats.Sacks);
+            var Takeaways = seasAvg(GamesPlayed, teamStats.Takeaways);
+            var FumblesRecovered = seasAvg(GamesPlayed, teamStats.FumblesRecovered);
+            var InterceptionReturns = seasAvg(GamesPlayed, teamStats.InterceptionReturns);
+            var OpponentTouchdowns = seasAvg(GamesPlayed, teamStats.OpponentTouchdowns);
+            var OpponentRushingYards = seasAvg(GamesPlayed, teamStats.OpponentRushingYards);
+            var OpponentRushingYardsPerAttempt = parseFloat(teamStats.OpponentRushingYardsPerAttempt);
+            var OpponentRushingTouchdowns = seasAvg(GamesPlayed, teamStats.OpponentRushingTouchdowns);
+            var OpponentPassingYards = seasAvg(GamesPlayed, teamStats.OpponentPassingYards);
+            var OpponentTimesSackedYards = seasAvg(GamesPlayed, teamStats.OpponentTimesSackedYards);
+            OpponentPassingYards = roundNum(OpponentPassingYards + OpponentTimesSackedYards); //For some idiotic reason sportsdata deducts sacked yards from total passing yards
+            //var OpponentPassingYardsPerCompletion = parseFloat(teamStats.OpponentPassingYardsPerCompletion);
+            var OpponentPassingCompletions = seasAvg(GamesPlayed, teamStats.OpponentPassingCompletions);
+            var OpponentPassingYardsPerCompletion = roundNum(OpponentPassingYards / OpponentPassingCompletions);
+            var OpponentPassingTouchdowns = seasAvg(GamesPlayed, teamStats.OpponentPassingTouchdowns);
+            var OpponentCompletionPercentage = parseFloat(teamStats.OpponentCompletionPercentage);
+            var OpponentFieldGoalAttempts = seasAvg(GamesPlayed, teamStats.OpponentFieldGoalAttempts);
+            var OpponentOffensivePlays = seasAvg(GamesPlayed, teamStats.OpponentOffensivePlays);
+            var InterceptionReturnTouchdowns = parseFloat(teamStats.InterceptionReturnTouchdowns);
+            var FumbleReturnTouchdowns = parseFloat(teamStats.FumbleReturnTouchdowns);
+            var BlockedKickReturnTouchdowns = parseFloat(teamStats.BlockedKickReturnTouchdowns);
+            var KickReturnTouchdowns = parseFloat(teamStats.KickReturnTouchdowns);
+            var PuntReturnTouchdowns = parseFloat(teamStats.PuntReturnTouchdowns);
+            var DefensiveTouchdowns = seasAvg(GamesPlayed, InterceptionReturnTouchdowns + FumbleReturnTouchdowns + BlockedKickReturnTouchdowns + KickReturnTouchdowns + PuntReturnTouchdowns);
+            var OpponentPunts = seasAvg(GamesPlayed, teamStats.OpponentPunts);
+            var OpponentScore = seasAvg(GamesPlayed, teamStats.OpponentScore);
+            
+            
+            // ASSIGN STATS TO FIELDS
+            // console.log(Score + ' vs ' + OpponentScore);        
+            // var calculatedScore = ((PassingTouchdowns + RushingTouchdowns) * 7.0) + (FieldGoalAttempts * 3.0);
+            // console.log(calculatedScore);
+            // calculatedScore = roundNum(calculatedScore, 1);
+            // $(awayOrHomeSelector + ' .team-score b').html(calculatedScore);
+            // $(awayOrHomeSelector + ' .score').val(calculatedScore);
+            
+            $(awayOrHomeSelector + ' .score-orig').val(Score);
+            $(oppSelector + ' .score-allowed').val(OpponentScore);
+            
+            // Once I have time - I need to store all the write and API to get all the Teams a team has faced and return their stats and avg them together as well
+            // for use with this function
+            // > fillTeamRowFancy(awayOrHome, thisSelector, team1OrigVal, team1OppsAvgAllowedVal, team1AllowedVal, team1OppsAvgOrigVal);
+            // will need any of the below which have "allowed" params.  For instance OpponentPassingTouchdowns currently tells me 
+            // how many Passing TDs this team has given up to opponents.  BUT, We need to know what is the Avg # of TDs all of the teams this team
+            // has faced have scored in total (team1OppsAvgOrigVal).  Also we need to know what the Avg Allowed passing TDs by all of those teams 
+            // is as well (team1OppsAvgAllowedVal)
+
+            fillTeamRow(awayOrHome, '.pass-tds', PassingTouchdowns, OpponentPassingTouchdowns);
+            fillTeamRow(awayOrHome, '.rush-tds', RushingTouchdowns, OpponentRushingTouchdowns);
+            fillTeamRow(awayOrHome, '.fg-atts', FieldGoalAttempts, OpponentFieldGoalAttempts);
+            fillTeamRow(awayOrHome, '.turnovers', Giveaways, Takeaways);
+
+            fillTeamRow(awayOrHome, '.off-snaps', OffensivePlays, OpponentOffensivePlays);
+
+            var PassRate = PassingAttempts / (PassingAttempts + RushingAttempts);
+            PassRate = roundNum(PassRate * 100);
+            RushRate = 100 - PassRate;
+            $(awayOrHomeSelector + ' .perc-pass').val(PassRate);
+            $(awayOrHomeSelector + ' .perc-pass-orig').val(PassRate);
+            $(awayOrHomeSelector + ' .perc-rush').val(RushRate);
+            $(awayOrHomeSelector + ' .perc-rush-orig').val(RushRate);
+
+            fillTeamRow(awayOrHome, '.comp-perc', CompletionPercentage, OpponentCompletionPercentage);
+            fillTeamRow(awayOrHome, '.yds-per-rec', PassingYardsPerCompletion, OpponentPassingYardsPerCompletion);
+            fillTeamRow(awayOrHome, '.yds-per-rush', RushingYardsPerAttempt, OpponentRushingYardsPerAttempt);
+            fillTeamRow(awayOrHome, '.pass-att', PassingAttempts, null);
+            fillTeamRow(awayOrHome, '.pass-comp', PassingCompletions, null);
+            fillTeamRow(awayOrHome, '.pass-yards', PassingYards, OpponentPassingYards);
+            fillTeamRow(awayOrHome, '.rush-att', RushingAttempts, null);
+            fillTeamRow(awayOrHome, '.rush-yards', RushingYards, OpponentRushingYards);
+            fillTeamRow(awayOrHome, '.fg-success', FieldGoalSuccess, null);
+            fillTeamRow(awayOrHome, '.def-sacks', Sacks, TimesSacked);
+            fillTeamRow(awayOrHome, '.def-tds', DefensiveTouchdowns, null);
+
+            updateTeamsScore();
+        }
+        
+        function updateTeamScore(awayOrHome) {
+            var awayOrHomeSelector = '#game-controls-home';
+            if (awayOrHome == 'away') {
+                awayOrHomeSelector = '#game-controls-away';
+            }
+            var PassingTouchdowns = $(awayOrHomeSelector + ' .pass-tds').val() || 0;
+            var RushingTouchdowns = $(awayOrHomeSelector + ' .rush-tds').val() || 0;
+            var FieldGoalAttempts = $(awayOrHomeSelector + ' .fg-atts').val() || 0;
+            var Giveaways = $(awayOrHomeSelector + ' .turnovers').val() || 0;
+
+            var calculatedScore = ((parseFloat(PassingTouchdowns) + parseFloat(RushingTouchdowns)) * 7.0) + (parseFloat(FieldGoalAttempts) * 3.0);
+            console.log(calculatedScore);
+            calculatedScore = Math.round(calculatedScore + Number.EPSILON);
+
+            $(awayOrHomeSelector + ' .team-score b').html(calculatedScore);
+            $(awayOrHomeSelector + ' .score').val(calculatedScore);
+        }
+        function updateTeamsScore() {
+            updateTeamScore('home');
+            updateTeamScore('away');
+        }
+
+        //Call this when the team game settings change and we want to recalculate all the projections
+        //Warning this will over-write any manually set player projections
+        function generateProjections() {
+            //generateProjectionsByTeam(homeTeam);
+            //generateProjectionsByTeam(awayTeam);
+            refreshProjectionsInData(currentlyLoadedTableData);
+            $("#tabulator-table").tabulator("replaceData", currentlyLoadedTableData);
+        }
+        
+        //PROBABLY CAN DELETE THIS FUNCTION - NOT USING ANYMORE
+        //UPDATING PROJECTIONS ABOVE IN refreshProjectionsInData and reloading all at once.
+        function generateProjectionsByTeam(thisTeam) {
+            var qbRowsArr = $("#tabulator-table").tabulator("searchRows", [
+                {field:"FantasyPosition", type:"=", value:"QB"}, 
+                {field:"Team", type:"=", value:thisTeam}, //and by height less than 142
+                {field:"dfsArmyProj", type:">", value:0}, //name must be steve, bob or jim
+            ]);
+            var qbRows = sortRowByKey(qbRowsArr, 'dfsArmyProj');
+            var topQB = qbRows[0]['_row']['data'];
+            topQB.PassingYards = $('.team-controls-'+thisTeam+' .pass-yards').val();
+            topQB.PassingTouchdowns = $('.team-controls-'+thisTeam+' .pass-tds').val();
+            topQB.PassingAttempts = $('.team-controls-'+thisTeam+' .pass-att').val();
+            topQB.PassingCompletions = $('.team-controls-'+thisTeam+' .pass-comp').val();
+            topQB.PassingYardsPerCompletion = $('.team-controls-'+thisTeam+' .yds-per-rec').val();
+            topQB.CompletionPercentage = $('.team-controls-'+thisTeam+' .comp-perc').val();
+
+
+            var rbRowsArr = $("#tabulator-table").tabulator("searchRows", [
+                {field:"FantasyPosition", type:"=", value:"RB"}, 
+                {field:"Team", type:"=", value:thisTeam}, //and by height less than 142
+                {field:"dfsArmyProj", type:">", value:0}, //name must be steve, bob or jim
+            ]);
+            var rbRows = sortRowByKey(rbRowsArr, 'dfsArmyProj');
+            var topRB = qbRows[0]['_row']['data'];
+            topRB.RushingYards = $('.team-controls-'+thisTeam+' .rush-yards').val();
+
+
+            topQB.editing = true;
+            
+            //console.log($("#tabulator-table").tabulator("getData"));
+            /*
+            filteredPlayers = dfsArmyPlayerProjs.filter(function (player) {
+                return player.Team == thisTeam || player.Team == awayTeam;
+            });
+            
+            for (var i = 0; i < filteredPlayers.length; i++) {
+                var thisPlayer = filteredPlayers[i];
+                if (
+            }
+            */
+            $("#tabulator-table").tabulator("updateData", [topQB]); //update data
+        }
+
+        function sortRowByKey(array, key) {
+            return array.sort(function(a, b) {
+                var x = a['_row']['data'][key]; var y = b['_row']['data'][key];
+                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            });
+        }
+        function sortByKey(array, key) {
+            return array.sort(function(a, b) {
+                var x = a[key]; var y = b[key];
+                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            });
+        }
+        function getContextualDate(dateString) {
+            /*
+             * DISABLE THIS SINCE WHAT IF SOMEONE GOES ON AA TRIP
+            if (!sessionStorage.getItem('timezone')) {
+                var tz = jstz.determine() || 'UTC';
+                sessionStorage.setItem('timezone', tz.name());
+            }
+            var timezone = sessionStorage.getItem('timezone') || jstz.determine();
+            */
+            var tz = jstz.determine();
+            var timezone = tz.name() || 'EDT';
+            //console.log('My timezone: ' + timezone);
+
+            var liveDate = dateString;
+            // console.log(liveDate);
+            // var parsed = moment(liveDate, 'ddd MMM D, YYYY h:mm A z');
+            // var parsed = moment(liveDate, 'YYYY-MM-DD H:m:s');
+            var parsed = moment.tz(liveDate, 'America/New_York');
+            //parsed = parsed.tz('America/Chicago');
+
+            var convertedDate = parsed.tz(timezone);
+            /*
+            var calDate = convertedDate.calendar(null,{
+                lastDay : '[Yesterday at] h:mm A z',
+                sameDay : '[Today at] h:mm A z',
+                nextDay : '[Tomorrow at] h:mm A z',
+                lastWeek : '[Last] dddd [at] h:mm A z',
+                nextWeek : 'dddd MMM D [at] h:mm A z',
+                sameElse : 'dddd MMM D [at] h:mm A z'
+            });
+            */
+            var calDate = convertedDate.format('MMM D, h:mm A');  
+            // console.log(calDate);
+            if (calDate + '' != 'Invalid date') {
+                return calDate + '';
+            } else {
+                // Invalid date - show original
+                // Do nothing
+            }
+            //var convertedDateFormat = convertedDate.format('dddd MMM D [at] h:mm A z');  
+            //console.log(convertedDateFormat);
+            return dateString;
+        }
+        
+        function reloadData() {
+            //$("#tabulator-table").tabulator("setData", "/static/data/sportsdata/2020/2020REG_FILTERED.json");
+            if (currentlyLoadedTableData != ''){
+                $("#tabulator-table").tabulator("setData", currentlyLoadedTableData);
+            }
+        }
+
+   
+        $(document).ready(function() {
+
+          $('#sites').material_select('destroy');
+          $('#years').material_select('destroy');
+          $('#seasons').material_select('destroy');
+          $('#weeks').material_select('destroy');
+          $('#slates').material_select('destroy');
+          //$('#games').material_select('destroy');
+          
+          $("#sites").val(site);
+          $("#years").val(year);
+          $("#seasons").val(season);
+          $("#weeks").val(week);
+          $("#slates").val(slate);
+          //$("#games").val(game);
+
+          $('#sites').material_select();
+          $('#years').material_select();
+          $('#seasons').material_select();
+          $("#weeks").material_select();
+          $("#slates").material_select();
+          //$('#games').material_select();
+          
+          $('#sites').on('change', function (obj) {
+            site = obj.currentTarget.value;
+            getGamesForWeek();
+            //loadSeasonData();
+            getSlates();
+          });
+          $('#years').on('change', function (obj) {
+            year = obj.currentTarget.value;
+            getGamesForWeek();
+            getTeamSeasonStats();
+            //loadSeasonData();
+            getSlates();
+          });
+          $('#seasons').on('change', function (obj) {
+            season = obj.currentTarget.value;
+            getGamesForWeek();
+            getTeamSeasonStats();
+            //loadSeasonData();
+            getSlates();
+          });
+          $('#weeks').on('change', function (obj) {
+            week = obj.currentTarget.value;
+            getGamesForWeek();
+            //loadSeasonData();
+            getSlates();
+          });
+          $('#slates').on('change', function (obj) {
+            slate = obj.currentTarget.value;
+            getGamesForWeek();
+            //loadSeasonData();
+          });
+          /*
+          $('#games').on('change', function (obj) {
+            game = obj.currentTarget.value;
+            getGamesForWeek();
+            //loadSeasonData();
+            //getSlates();
+          });
+          */
+          
+          $('.generate-button').click(function() {
+            generateProjections();
+          });
+
+          $('.game-input').on('keyup', function (obj) {
+            updateTeamsScore();
+          });
+          $('.game-input').on('change', function (obj) {
+            updateTeamsScore();
+          });
+          
+          $('.game-controls-advanced-but').click(function() {
+            $('.advanced-headings').toggle();
+            $('.advanced-controls-wrapper').toggle();
+            $('.game-input-xtra').toggle();
+          });
+          /* 
+            Loads this weeks stats if not already loaded
+          */
+          $(".loadWeekButton").click(function(e) {
+            //load_week(year, week, site, '', season, reload);
+            //start_update_weekdata_for_team_request(0, 'true');
+          });
+          $(".reloadDataBut").click(function(e) {
+            updateActiveGame(gameElemLastSelected);
+          });
+
+            $('.filter-box-selected').click(function() {
+                var gameElem = $(this);
+                $('.filter-box').removeClass('inactive-filter');
+                $('.filter-box').removeClass('active-filter');
+                homeTeam = '';
+                awayTeam = '';
+                $('#main-controls-wrap').show();
+                $('.selected-game-wrap').hide();
+                $("#tabulator-table").tabulator("clearFilter");
+            });
+          /* 
+            Loads this weeks salaries if not already loaded
+          */
+          $(".loadSalaryButton").click(function(e) {
+              var url = "/nfl_research/load_salary/"; // the script where you handle the form input.
+              //waitingDialog.show('Please wait while this weeks stats are loaded');
+              var thisData = {
+                week: week,
+                year: year,
+                site: site,
+                season: season, /* Week, Post, Pre */
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+              };
+              $.ajax({
+                context: this,
+                type: "POST",
+                url: url,
+                data: thisData, 
+                beforeSend: function() {
+                   $('#loader').show();
+                   $('#loader').addClass('show');
+                },
+                complete: function(){
+                   $('#loader').removeClass('show');
+                   $('#loader').hide();
+                },
+                success: function(data)
+                {
+                  if (data.success == 'true') {
+                    //waitingDialog.hide();
+                    getSlates();
+                    console.log(data);
+                  } else {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                  }
+                },
+                error: function(data)
+                {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.statusText); // show error
+                },
+              });
+
+              // e.preventDefault(); // avoid to execute the actual submit of the form.
+          });
+        
+          //getSlates();
+          
+          // SideNav Initialization
+          $(".button-collapse").sideNav();
+          
+          //Select box init
+          //$('.mdb-select').material_select();
+          
+          $(".button-collapse").click(function(e) {
+            $(".body-container").removeClass( "nav-out" ).addClass( "nav-in" );
+            $(".top-nav").removeClass( "nav-out" ).addClass( "nav-in" );
+            $("#sidenav-overlay").click(function(e) {
+              $(".body-container").removeClass( "nav-in" ).addClass( "nav-out" );
+              $(".top-nav").removeClass( "nav-in" ).addClass( "nav-out" );
+              $(".button-collapse").show();
+            });
+            $(".button-collapse").hide();
+          });
+             
+          // Open Sidebar by default     
+          //$(".button-collapse").trigger( "click" );
+
+          var initialValue = 50;
+          var initialValues = [30, 70];
+          var sliderTooltip = function(event, ui) {
+            if (event && event.target) {
+              var initialValues = [$(event.target).attr('slider-min')*1, $(event.target).attr('slider-max')*1];
+              var curValues = ui.values || initialValues;
+              var tooltip1 = '<div class="tooltip"><div class="tooltip-inner">' + curValues[0] + '</div><div class="tooltip-arrow"></div></div>';
+              var tooltip2 = '<div class="tooltip"><div class="tooltip-inner">' + curValues[1] + '</div><div class="tooltip-arrow"></div></div>';
+
+              $(event.target.children[1]).html(tooltip1);
+              $(event.target.children[2]).html(tooltip2);
+            }
+          }
+          var updateTable = function(event, ui){
+              if (ui.values && ui.values.length > 0) {
+                var fieldName = $(event.target).data('slider-field') || "";
+                var curValues = ui.values;
+                if (fieldName != "") {
+                  var setValues = [];
+                  setValues.push({field:fieldName, type:">=", value:curValues[0]});
+                  setValues.push({field:fieldName, type:"<=", value:curValues[1]});
+                  $("#tabulator-table").tabulator("setFilter", setValues);
+
+                  $(".filter-sliders").each(function(index, val) {
+                    if (index < 2) {
+                    var theseVals = $(this).dragslider("option", "values");
+                    var thisFieldName = $(this).data('slider-field') || "";
+                    if (theseVals && theseVals.length > 1 && thisFieldName != "") {
+                      if (thisFieldName != fieldName) {
+                        $("#tabulator-table").tabulator("addFilter", thisFieldName, ">=", theseVals[0]);
+                        $("#tabulator-table").tabulator("addFilter", thisFieldName, "<=", theseVals[1]);
+                        //setValues.push({field:thisFieldName, type:">=", value:theseVals[0]});
+                        //setValues.push({field:thisFieldName, type:"<=", value:theseVals[1]});
+                      }
+                    }
+                    }
+                  });
+                }
+              }
+          }
+
+
+          $(".filter-sliders").each(function(index, val) {
+            $(this).dragslider({
+              animate: true,   // Works with animation.
+              range: true,     // Must have a range to drag.
+              rangeDrag: true, // Enable range dragging.
+              values: [$(this).attr('slider-min')*1.0, $(this).attr('slider-max')*1.0],
+              max: $(this).attr('slider-max')*1.0,
+              min: $(this).attr('slider-min')*1.0,
+              step: $(this).attr('slider-step')*1.0,
+              start: function( event, ui ) {
+                sliderTooltip(event, ui);
+                //console.log(ui);
+                //$(ui.handle).find('.ui-slider-tooltip').show();
+              },
+              stop: function( event, ui ) {
+                sliderTooltip(event, ui);
+                //$(ui.handle).find('.ui-slider-tooltip').hide();
+              },
+              slide: function(event, ui) {
+                sliderTooltip(event, ui);
+                //$(ui.handle).find('.ui-slider-tooltip').text(ui.value);
+              },
+              create: function( event, ui ) {
+                sliderTooltip(event, ui);
+                /*
+                var tooltip = $('<div class="ui-slider-tooltip" />').css({
+                    position: 'absolute',
+                    top: -25,
+                    left: -10
+                });
+                $(event.target).find('.ui-slider-handle').append(tooltip);
+                */
+              },
+              change: function(event, ui) {
+                updateTable(event, ui);
+              }
+            });
+          });
+          /*
+          $("#my-slider").rangeSlider({
+            bounds: {min: 0, max: 100},
+            wheelMode: "zoom",
+            min: 10,
+            max: 80,
+          });
+          */
+        
+          var tabledata = [
+          {id:1, name:"Oli Bob", progress:12, gender:"male", rating:1, col:"red", dob:"19/02/1984", car:1, lucky_no:5, activity:[1, 20, 5, 3, 10, 13, 17, 15, 9, 11, 10, 12, 14, 16, 13, 9, 7, 11, 10, 13]},
+          {id:2, name:"Mary May", progress:1, gender:"female", rating:2, col:"blue", dob:"14/05/1982", car:true, lucky_no:10, activity:[10, 12, 14, 16, 13, 9, 7, 11, 10, 13, 1, 2, 5, 4, 1, 16, 4, 2, 1, 3]},
+          {id:3, name:"Christine Lobowski", progress:42, gender:"female", rating:0, col:"green", dob:"22/05/1982", car:"true", lucky_no:12, activity:[1, 2, 5, 4, 1, 16, 4, 2, 1, 3, 3, 7, 9, 1, 4, 8, 2, 6, 4, 2]},
+          {id:4, name:"Brendon Philips", progress:100, gender:"male", rating:1, col:"orange", dob:"01/08/1980", lucky_no:18, activity:[3, 7, 9, 1, 4, 8, 2, 6, 4, 2, 1, 3, 1, 3, 3, 1, 1, 3, 1, 3]},
+          {id:5, name:"Margret Marmajuke", progress:16, gender:"female", rating:5, col:"yellow", dob:"31/01/1999", lucky_no:33, activity:[1, 3, 1, 3, 3, 1, 1, 3, 1, 3, 20, 17, 15, 11, 16, 9, 12, 14, 20, 12]},
+          {id:6, name:"Frank Harbours", progress:38, gender:"male", rating:4, col:"red", dob:"12/05/1966", car:1, lucky_no:2, activity:[20, 17, 15, 11, 16, 9, 12, 14, 20, 12, 11, 7, 6, 12, 14, 13, 11, 10, 9, 6]},
+          {id:7, name:"Jamie Newhart", progress:23, gender:"male", rating:3, col:"green", dob:"14/05/1985", car:true, lucky_no:63, activity:[11, 7, 6, 12, 14, 13, 11, 10, 9, 6, 4, 17, 11, 12, 0, 5, 12, 14, 18, 11]},
+          {id:8, name:"Gemma Jane", progress:60, gender:"female", rating:0, col:"red", dob:"22/05/1982", car:"true", lucky_no:72, activity:[4, 17, 11, 12, 0, 5, 12, 14, 18, 11, 11, 15, 19, 20, 17, 16, 16, 5, 3, 2]},
+          {id:9, name:"Emily Sykes", progress:42, gender:"female", rating:1, col:"maroon", dob:"11/11/1970", lucky_no:44, activity:[11, 15, 19, 20, 17, 16, 16, 5, 3, 2, 1, 2, 3, 4, 5, 4, 2, 5, 9, 8]},
+          {id:10, name:"James Newman", progress:73, gender:"male", rating:5, col:"red", dob:"22/03/1998", lucky_no:9, activity:[1, 20, 5, 3, 10, 13, 17, 15, 9, 11, 1, 2, 3, 4, 5, 4, 2, 5, 9, 8]},
+          {id:11, name:"Martin Barryman", progress:20, gender:"male", rating:5, col:"violet", dob:"04/04/2001", activity:[1, 2, 3, 4, 5, 4, 11, 7, 6, 12, 14, 13, 11, 10, 9, 6, 2, 5, 9, 8]},
+          {id:12, name:"Jenny Green", progress:56, gender:"female", rating:4, col:"indigo", dob:"12/11/1998", car:true, activity:[11, 15, 19, 20, 17, 15, 11, 16, 9, 12, 14, 20, 12, 20, 17, 16, 16, 5, 3, 2]},
+          {id:13, name:"Alan Francis", progress:90, gender:"male", rating:3, col:"blue", dob:"07/08/1972", car:true, activity:[4, 17, 11, 7, 6, 12, 14, 13, 11, 10, 9, 6, 11, 12, 0, 5, 12, 14, 18, 11]},
+          {id:14, name:"John Phillips", progress:80, gender:"male", rating:1, col:"green", dob:"24/09/1950", car:true, activity:[11, 7, 6, 12, 14, 1, 20, 5, 3, 10, 13, 17, 15, 9, 1, 13, 11, 10, 9, 6]},
+          {id:15, name:"Ed White", progress:70, gender:"male", rating:0, col:"yellow", dob:"19/06/1976", activity:[20, 17, 15, 11, 16, 9, 4, 17, 11, 12, 0, 5, 12, 14, 18, 11, 12, 14, 20, 12]},
+          {id:16, name:"Paul Branderson", progress:60, gender:"male", rating:5, col:"orange", dob:"01/01/1982", activity:[1, 3, 1, 3, 3, 1, 11, 15, 19, 20, 17, 16, 16, 5, 3, 2, 1, 3, 1, 3]},
+          {id:18, name:"Emma Netwon", progress:40, gender:"female", rating:4, col:"brown", dob:"07/10/1963", car:true, activity:[3, 7, 9, 1, 4, 8, 3, 7, 9, 1, 4, 8, 2, 6, 4, 2, 2, 6, 4, 2]},
+          {id:19, name:"Hannah Farnsworth", progress:30, gender:"female", rating:1, col:"pink", dob:"11/02/1991", activity:[1, 2, 5, 4, 1, 16, 10, 12, 14, 16, 13, 9, 7, 11, 10, 13, 4, 2, 1, 3]},
+          {id:20, name:"Victoria Bath", progress:20, gender:"female", rating:2, col:"purple", dob:"22/03/1986", activity:[10, 12, 14, 16, 13, 9, 7, 1, 2, 3, 4, 5, 4, 2, 5, 9, 8, 11, 10, 13]},
+          ];
+
+          var genderEditor = function(cell, onRendered, success, cancel){
+            var editor = $("<select><option value=''></option><option value='male'>male</option><option value='female'>female</option></select>");
+            editor.css({
+              "padding":"5px",
+              "width":"100%",
+              "box-sizing":"border-box",
+            });
+
+            //Set value of editor to the current value of the cell
+            editor.val(cell.getValue());
+
+            //set focus on the select box when the editor is selected (timeout allows for editor to be added to DOM)
+            onRendered(function(){
+              editor.focus();
+              editor.css("height","100%");
+            });
+
+            //when the value has been set, trigger the cell to update
+            editor.on("change blur", function(e){
+              success(editor.val());
+            });
+
+            //return the editor element
+            return editor;
+          };
+
+
+          /*
+          var getMaxVal = function(values, data, calcParams){
+              //values - array of column values
+              //data - all table data
+              //calcParams - params passed from the column defintion object
+              console.log(calcParams);
+              var maxVal = Math.max.apply(Math,values);
+              return maxVal;
+          }
+
+          var getMinVal = function(values, data, calcParams){
+              //values - array of column values
+              //data - all table data
+              //calcParams - params passed from the column defintion object
+              console.log(calcParams);
+              var minVal = Math.min.apply(Math,values);
+              return minVal;
+          }
+          */
+          $("#tabulator-table").tabulator({
+            //layout:"fitDataFill",
+            index:"PlayerID",
+            layout:"fitColumns",
+            persistenceID:"dfsStatsTable", //id string, can only be numbers, letters, hyphens and underscores.
+            persistentLayout:false, //Enable column layout persistence
+            tooltips:true,
+            //selectable:true,
+            //addRowPos:"top",
+            history:true,
+            dataTree:true,
+            //pagination:"local",
+            //paginationSize:7,
+            movableColumns:true,
+            height:"500px",
+            placeholder:"No Data Set",
+            initialSort:[
+                {column:"iFantasyPoints", dir:"desc"},
+                {column:"FantasyPosition", dir:"asc"},
+                {column:"Team", dir:"asc"},
+            ],
+            groupBy: ["Team", "FantasyPosition"],
+            /*function(data){
+                //data - the data object for the row being grouped
+                return [data.Team, data.FantasyPosition] //data.Team + " - " + data.FantasyPosition; //groups by data and age
+            },*/
+            groupHeader:function(value, count, data, group){
+                //value - the value all members of this group share
+                //count - the number of rows in this group
+                //data - an array of all the row data objects in this group
+                //group - the group component for the group
+
+                return value;
+            },
+            groupStartOpen:function(value, count, data, group){
+                //value - the value all members of this group share
+                //count - the number of rows in this group
+                //data - an array of all the row data objects in this group
+                //group - the group component for the group
+
+                return [true, true]; 
+            },
+            columns:[
+                {title:"Player", field:"Name", sorter:"string", minWidth:110, frozen:true},
+                {title:"NewProj", field:"iFantasyPoints", minWidth:70, sorter:"number", mutator:newProjMutator, frozen:true},
+                {title:"CaptPts", field:"iCaptainPoints", minWidth:70, sorter:"number", mutator:captainMutator, frozen:true},
+                {title:"ArmyProj", field:"dfsArmyProj", minWidth:70, sorter:"number", mutator:armyPointsMutator},
+                {title:"FptsAvg", field:"FantasyPoints", minWidth:60, sorter:"number", mutator:fantasyPointsMutator},
+                {title:"DvP", field:"DvP", sorter:"number", mutator:dvpMutator},
+                {title:"Salary", field:"Salary", sorter:"number", minWidth:50, mutator:salaryMutator},
+                //{title:"Year", field:"Year", sorter:"number", mutator:checkForBlank, topCalc:getMaxVal, bottomCalc:getMinVal, topCalcParams:{field:"Year"}, bottomCalcParams:{field:"Year"}},
+                //{title:"Year", field:"Year", sorter:"number", mutator:checkForBlank},
+                //{title:"Season", field:"Season", sorter:"string"},
+                {title:"Pos", field:"FantasyPosition", sorter:"string"},
+                //{title:"Week", field:"Week", sorter:"number", mutator:checkForBlank},
+                {title:"Team", field:"Team", sorter:"string"},
+                {title:"Games", field:"Played", sorter:"number", mutator:checkForBlank},
+                {title:"Parent", field:"isParent", sorter:"number", mutator:parentMutator, visible: false},
+                {title:"ID", field:"PlayerID", sorter:"number", visible:false},
+                {//create column group
+                    title:"Passing",
+                    columns:[
+                        {title:"pShr", field:"PassingAttemptsShare", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"pAtt", field:"PassingAttempts", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"pComp", field:"PassingCompletions", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"pYPC", field:"PassingYardsPerCompletion", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"pYds", field:"PassingYards", minWidth:50, sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"pTDs", field:"PassingTouchdowns", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"CompPcnt", field:"PassingCompletionPercentage", sorter:"number", visible:false, mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                    ],
+                },
+                {//create column group
+                    title:"Rushing",
+                    columns:[
+                        {title:"rShr", field:"RushingAttemptsShare", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rAtt", field:"RushingAttempts", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rYPA", field:"RushingYardsPerAttempt", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rYds", field:"RushingYards", minWidth:50, sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rTDs", field:"RushingTouchdowns", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                    ],
+                },
+                {//create column group
+                    title:"Receiving",
+                    columns:[
+                        {title:"TgShr", field:"ReceivingTargetsShare", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"Tgts", field:"ReceivingTargets", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"Recs", field:"Receptions", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rYPR", field:"ReceivingYardsPerReception", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rYds", field:"ReceivingYards", minWidth:50, sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"rTDs", field:"ReceivingTouchdowns", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                    ],
+                },
+                {//create column group
+                    title:"TOs &amp; FGs",
+                    columns:[
+                        {title:"Sacks", field:"Sacks", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        {title:"Int", field:"iInterceptions", sorter:"number", mutator:interceptionMutator, editable:editCheck, editor: 'input'},
+                        {title:"Fum", field:"iFumbles", sorter:"number", mutator:fumbleMutator, editable:editCheck, editor: 'input'},
+                        {title:"Pnts", field:"iPA", sorter:"number", mutator:paMutator, editable:editCheck, editor: 'input'},
+                    ],
+                },
+                /*
+                {//create column group
+                    title:"Team Share Percent",
+                    columns:[
+                        {title:"shrPassAtt", field:"shrPassingAttempts", sorter:"number", mutator:function(value, data, type, params, component){return projsPercMutator(data, 'PassingAttempts');}},
+                        {title:"shrPassTDs", field:"shrPassingTouchdowns", sorter:"number", mutator:function(value, data, type, params, component){return projsPercMutator(data, 'PassingTouchdowns');}},
+                        {title:"shrTarg", field:"shrReceivingTargets", sorter:"number", mutator:function(value, data, type, params, component){return projsPercMutator(data, 'ReceivingTargets');}},
+                        {title:"shrRecTDs", field:"shrReceivingTouchdowns", sorter:"number", mutator:function(value, data, type, params, component){return projsPercMutator(data, 'ReceivingTouchdowns');}},
+                        {title:"shrRushAtt", field:"shrRushingAttempts", sorter:"number", mutator:function(value, data, type, params, component){return projsPercMutator(data, 'RushingAttempts');}},
+                        {title:"shrRushTDs", field:"shrRushingTouchdowns", sorter:"number", mutator:function(value, data, type, params, component){return projsPercMutator(data, 'RushingTouchdowns');}},
+
+                        {title:"prjPassAtt", field:"prjPassingAttempts", sorter:"number", mutator:function(value, data, type, params, component){return projsMutator(data, 'PassingAttempts');}},
+                        {title:"prjPassTDs", field:"prjPassingTouchdowns", sorter:"number", mutator:function(value, data, type, params, component){return projsMutator(data, 'PassingTouchdowns');}},
+                        {title:"prjTarg", field:"prjReceivingTargets", sorter:"number", mutator:function(value, data, type, params, component){return projsMutator(data, 'ReceivingTargets');}},
+                        {title:"prjRecTDs", field:"prjReceivingTouchdowns", sorter:"number", mutator:function(value, data, type, params, component){return projsMutator(data, 'ReceivingTouchdowns');}},
+                        {title:"prjRushAtt", field:"prjRushingAttempts", sorter:"number", mutator:function(value, data, type, params, component){return projsMutator(data, 'RushingAttempts');}},
+                        {title:"prjRushTDs", field:"prjRushingTouchdowns", sorter:"number", mutator:function(value, data, type, params, component){return projsMutator(data, 'RushingTouchdowns');}},
+                    ],
+                },
+                */
+            ],
+            dataSorted:function(thisData){
+              /*
+              $('.filter-sliders').each(function(index, value){
+                var fieldName = $(this).data('slider-field');
+                console.log(fieldName);
+                var minVal = $('.tabulator-calcs-bottom div[tabulator-field="' + fieldName + '"]').attr('Title') * 1;
+                console.log(minVal);
+                var maxVal = $('.tabulator-calcs-top div[tabulator-field="' + fieldName + '"]').attr('Title') * 1;
+                if (!isNaN(minVal) && !isNaN(maxVal)) {
+                  $(this).dragslider('option',{min: minVal, max: maxVal});
+                }
+              });
+              */
+              //$('.tabulator-calcs-bottom div[tabulator-field="Year"]').attr('Title')
+            },
+            dataFiltered:function(filters, rows){
+              //filters - array of filters currently applied
+              //rows - array of row components that pass the filters
+            },
+            dataEdited:function(tableData){
+                //tableData - the updated full table data
+                //console.log(tableData);
+            },
+            renderComplete:function() {
+                setTimeout(function() {
+                    toggleDetailColumns("hideColumn");
+                }, 500);
+            },
+            dataLoaded:function(data){
+                //data - all data loaded into the table
+            },
+
+          });
+            /*
+            columns:[
+              {title:"Name", field:"name", editor:"input"},
+              {title:"Task Progress", field:"progress", align:"left", formatter:"progress", editor:true},
+              {title:"Activity", field:"activity", width:160, formatter:lineFormatter, headerSort:false},
+              {title:"Gender", field:"gender", width:90, editor:genderEditor},
+              {title:"Rating", field:"rating", formatter:"star", align:"center", width:100, editor:true},
+              {title:"Color", field:"col", width:130, editor:"input"},
+              {title:"Date Of Birth", field:"dob", width:130, sorter:"date", align:"center"},
+              {title:"Car", field:"car", width:80,  align:"center", formatter:"tickCross", sorter:"boolean", editor:true},
+            ],
+            */
+          //$("#tabulator-table").tabulator("setData", tabledata);
+          //$("#tabulator-table").tabulator("setData", "/static/data/fantasydata_wr2.json");2020REG_FILTERED.json
+          reloadData();
+          //trigger AJAX load on "Load Data via AJAX" button click
+          /*
+          $("#ajax-trigger").click(function(){
+              $("#tabulator-table").tabulator("setData", "/static/data/playerdata_wr_reg.json");
+          });
+          */
+          
+          $(window).resize(function(){
+            $("#tabulator-table").tabulator("redraw");
+          });
+
+
+          $("#tabulator-controls input[name=Name]").on("keyup", function(){
+            $("#tabulator-table").tabulator("setFilter", "Name", "like", $(this).val())
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=hide-col]").on("click", function(){
+            $(this).toggleClass("col-hide");
+
+            if($(this).hasClass("col-hide")){
+                toggleDetailColumns("hideColumn");
+
+            }else{
+                toggleDetailColumns("showColumn");
+            }
+            return false;
+          });
+
+          $("#tabulator-controls button[name=undo]").on("click", function(){
+            $("#tabulator-table").tabulator("undo")
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=add-row]").on("click", function(){
+            $("#tabulator-table").tabulator("addRow", {});
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=download-csv]").on("click", function(){
+            $("#tabulator-table").tabulator("download", "csv", "stats.csv");
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=download-json]").on("click", function(){
+            $("#tabulator-table").tabulator("download", "json", "stats.json");
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=download-xlsx]").on("click", function(){
+            $("#tabulator-table").tabulator("download", "xlsx", "stats.xlsx");
+            return false;
+          });
+
+
+            get_current_week();
+            get_current_season();
+
+        });
+        
+
+      </script>
+    </main>
+
+  </body>
+</html>

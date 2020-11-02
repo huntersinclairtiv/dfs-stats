@@ -1,0 +1,327 @@
+{% load static %}
+{% load insight_tags %}
+<!DOCTYPE html>
+<html>
+  <head>    
+    <title>Analytics Testing</title>
+    {% include 'nfl_research/partials/html_common_head.html' %}
+    <style>
+    </style>
+  </head>
+  <body class="fixed-sn light-blue-skin">
+
+    {% include 'nfl_research/partials/header_w_sidebar.html' with active_page='data_loader' %}
+
+    <main class="body-container nav-out">
+
+      <h1 class="left">Data Downloader Tool</h1>
+      <p class="clearfix">This is for downloading and storing new data.</p>
+      <div id="main-controls" class="table-controls">
+          <select id="sites" class="site-select mdb-select">
+            <option value="" disabled>Choose DFS Site</option>
+            <option value="DK" selected>DraftKings</option>
+            <option value="Fanduel">Fanduel</option>
+          </select>
+          <select id="years" class="year-select mdb-select">
+            <option value="">All Years</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020" selected>2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+            <option value="2014">2014</option>
+            <option value="2013">2013</option>
+            <option value="2012">2012</option>
+            <option value="2011">2011</option>
+            <option value="2010">2010</option>
+          </select>
+          <select id="seasons" class="season-select mdb-select">
+            <option value="" selected>All Seasons</option>
+            <option value="Week">Regular</option>
+            <option value="Pre">Pre</option>
+            <option value="Post">Post</option>
+          </select>
+          <select id="weeks" class="week-select mdb-select">
+            <option value="" selected>All Weeks</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+          </select>
+          <select id="slates" class="slate-select mdb-select">
+            <option value="" disabled selected>Choose your slate</option>
+            <option value=""></option>
+          </select>
+          <select id="force-reload" class="force-reload-select mdb-select">
+            <option value="false" selected>Update Only</option>
+            <option value="true">Force Reload</option>
+          </select>
+      </div>
+      <div id="tabulator-controls" class="table-controls">
+          <i class="fa fa-filter fa-fw"></i> <input name="Player" type="text" placeholder="Filter Table By Name">
+          <button name="loadstats" class="btn btn-primary loadStatsButton">Load Stats</button>
+          <button name="loadsalary" class="btn btn-primary loadSalaryButton">Load weeks salaries</button>
+      </div>
+      {% csrf_token %}
+      <div><textarea id="results-output" rows=20></textarea></div>
+      <div id="tabulator-table"></div>
+
+      <div id="loader" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">
+        <div class="modal-dialog modal-m" style="z-index:9999">
+          <div class="modal-content">
+            <div class="modal-header"><h3 style="margin:0;">Loading NFL Stats Data</h3></div>
+            <div class="modal-body">
+              <div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+      </div>
+      <!-- SCRIPTS -->
+      <!-- JQuery -->
+      <!-- MDB core JavaScript with jQuery and bootstrap included-->
+      <script type="text/javascript" src="{% static 'js/mdb.compiled.min.js' %}"></script>
+      <!-- script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script -->
+      <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+
+      <!-- Latest compiled and minified JavaScript -->
+      <!-- script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script -->
+      
+      <!-- Sparkline control for tables -->
+      <script type="text/javascript" src="{% static 'js/sparkline.js' %}"></script>
+      <!-- Tabulator Table controls -->
+      <script type="text/javascript" src="{% static 'js/tabulator.min.js' %}"></script>
+      <!-- Bootstrap tooltips -->
+      <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+      <!-- Bootstrap core JavaScript -->
+      <!-- script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script -->
+      <!-- D3 graph controls -->
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+      <!-- hamburger controls -->
+      <!-- script src="{% static 'hamburger.js' %}"></script -->
+      <script src="{% static 'js/jquery.mousewheel.min.js' %}"></script>
+      <script src="{% static 'js/jQAllRangeSliders-min.js' %}"></script>
+      <script src="{% static 'js/jquery-ui-dragslider.js' %}"></script>
+
+
+      <script type="text/javascript" src="{% static 'modal.js' %}"></script>
+      <script type="text/javascript">
+        var week = "";
+        var season = "";
+        var site = "DK";
+        var year = 2018;
+        var force_reload = 'false';
+      
+        /* 
+          Loads this weeks slates if not already loaded
+        */
+        function loadSlates() {
+            var url = "/nfl_research/load_slates/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              week: week,
+              year: year,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (data.success == 'true') {
+                  //waitingDialog.hide();
+                  htmlContent = '<option value="" disabled selected>Choose your slate</option>';
+                  if (data.slates && data.slates.length > 0) {
+                    for (var i = 0, len = data.slates.length; i < len; i++) {
+                      htmlContent += '<option value="' + data.slates[i] + '">' + data.slates[i] + '</option>';
+                    }
+                  }
+                  $('#slates').html(htmlContent);
+                  $('#slates').material_select('destroy');
+                  $('#slates').material_select();
+                  $('#slates').unbind('change')
+                  $('#slates').on('change', function (obj) {
+                    // do something…
+                    //console.log(obj.currentTarget.value);
+                    load_week(year, week, site, obj.currentTarget.value, season, reload);
+                  });
+                  console.log(data);
+                } else {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+        /* END OF loadSlates */
+ 
+
+        const NFL_TEAMS = ['ARI','ATL','BAL','BUF','CAR','CHI','CIN','CLE','DAL','DEN','DET','GB','HOU','IND','JAX','KC','LAC','LAR','MIA','MIN','NE','NO','NYG','NYJ','OAK','PHI','PIT','SEA','SF','TB','TEN','WAS'];
+
+        function update_stats_data_request(year, week, season, reload) {
+            var url = "/nfl_research/update_stats_data/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              week: week,
+              season: season, /* Week, Post, Pre */
+              reload: reload, /* set to true to force reload of week data */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                $('#loader').show();
+                $('#loader').addClass('show');
+              },
+              complete: function(){
+                $('#loader').removeClass('show');
+                $('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (typeof console != 'Undefined') { console.log(data); }
+                
+                if (data.logResults) {
+                  $('#results-output').html(data.logResults);
+                } else {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                }
+                $('#loader').removeClass('show');
+                $('#loader').hide();
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+                $('#loader').removeClass('show');
+                $('#loader').hide();
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }  
+            
+        $(document).ready(function() {
+
+          $('#sites').material_select('destroy');
+          $('#years').material_select('destroy');
+          $('#seasons').material_select('destroy');
+          $('#weeks').material_select('destroy');
+          $('#force-reload').material_select('destroy');
+          
+          $("#sites").val(site);
+          $("#years").val(year);
+          $("#seasons").val(season);
+          $("#weeks").val(week);
+          $("#force-reload").val(force_reload);
+
+          $('#sites').material_select();
+          $('#years').material_select();
+          $('#seasons').material_select();
+          $('#weeks').material_select();
+          $('#force-reload').material_select();
+
+          $('#sites').on('change', function (obj) {
+            site = obj.currentTarget.value;
+            //getSlates();
+          });
+          $('#years').on('change', function (obj) {
+            year = obj.currentTarget.value;
+            //getSlates();
+          });
+          $('#seasons').on('change', function (obj) {
+            season = obj.currentTarget.value;
+            //getSlates();
+          });
+          $('#weeks').on('change', function (obj) {
+            week = obj.currentTarget.value;
+            //getSlates();
+          });
+          $('#force-reload').on('change', function (obj) {
+            force_reload = obj.currentTarget.value;
+            //getSlates();
+          });
+          
+          /* 
+            Loads stats data from selected options 
+          */
+          $(".loadStatsButton").click(function(e) {
+            update_stats_data_request(year, week, season, force_reload);
+          });
+        
+          //getSlates();
+          
+          // SideNav Initialization
+          $(".button-collapse").sideNav();
+          
+          //Select box init
+          //$('.mdb-select').material_select();
+          
+          $(".button-collapse").click(function(e) {
+            $(".body-container").removeClass( "nav-out" ).addClass( "nav-in" );
+            $(".top-nav").removeClass( "nav-out" ).addClass( "nav-in" );
+            $("#sidenav-overlay").click(function(e) {
+              $(".body-container").removeClass( "nav-in" ).addClass( "nav-out" );
+              $(".top-nav").removeClass( "nav-in" ).addClass( "nav-out" );
+              $(".button-collapse").show();
+            });
+            $(".button-collapse").hide();
+          });
+                  
+          //$(".button-collapse").trigger( "click" );
+
+        });
+      </script>
+    </main>
+
+  </body>
+</html>

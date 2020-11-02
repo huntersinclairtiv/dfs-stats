@@ -1,0 +1,1473 @@
+{% load staticfiles %}
+{% load insight_tags %}
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <link href="{% static 'hamburger.css' %}" rel="stylesheet" />
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+ 
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <style>
+
+    .node rect {
+      cursor: move;
+      fill-opacity: .9;
+      shape-rendering: crispEdges;
+    }
+
+    .node text {
+      pointer-events: none;
+      text-shadow: 0 1px 0 #fff;
+    }
+
+    .link {
+      fill: none;
+      stroke: #000;
+      stroke-opacity: .2;
+    }
+
+    .link:hover {
+      stroke-opacity: .5;
+    }
+
+    #chart svg {
+      transform: scale(.6,.6);
+      margin-left: -25%;
+      margin-top: -160%;
+    }
+
+    .datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {margin-bottom: 20px; font: normal 12px/150% Courier New, Courier, monospace; background: #fff; overflow: hidden; border: 1px solid #256129; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }.datagrid table td, .datagrid table th { padding: 3px 10px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1C8C14), color-stop(1, #1B4019) );background:-moz-linear-gradient( center top, #1C8C14 5%, #1B4019 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1C8C14', endColorstr='#1B4019');background-color:#1C8C14; color:#FFFFFF; font-size: 16px; font-weight: normal; border-left: 1px solid #0A4006; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #00496B; border-left: 1px solid #6FA86D;font-size: 13px;font-weight: normal; }.datagrid table tbody .alt td { background: #E2F4E0; color: #00496B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }.datagrid table tfoot td div { border-top: 1px solid #256129;background: #E1EEF4;} .datagrid table tfoot td { padding: 0; font-size: 10px } .datagrid table tfoot td div{ padding: 2px; }.datagrid table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; }.datagrid table tfoot  li { display: inline; }.datagrid table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #FFFFFF;border: 1px solid #08570E;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #047800), color-stop(1, #114501) );background:-moz-linear-gradient( center top, #047800 5%, #114501 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#047800', endColorstr='#114501');background-color:#047800; }.datagrid table tfoot ul.active, .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #08570E; color: #FFFFFF; background: none; background-color:#335901;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
+
+    input[type="button" i], input[type="submit" i] {
+      border: none;
+      background-color: transparent;
+      color: #00496B;
+      font-size: 13px;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    input[type="button" i]:hover, input[type="submit" i]:hover {
+      text-decoration: underline;
+    }
+    .errormsg{
+      color: #ff0000;
+    }
+    .datagrid {
+        overflow: initial;
+        max-width: 100%;
+        overflow-x: scroll;
+    }
+    .datagrid table thead th {
+        overflow: hidden;
+        max-width: 100px;
+        font-size:14px;
+        font-family: 'PT Sans Narrow', sans-serif;
+        font-weight: normal;
+    }
+    h1 {
+      margin: 0;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+    nav.sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .body-container {
+      padding: 0px 20px 20px 60px;
+      -webkit-transition: padding-left 500ms ease-out;
+      -moz-transition: padding-left 500ms ease-out;
+      -o-transition: padding-left 500ms ease-out;
+      transition: padding-left 500ms ease-out;
+    }
+    .body-container.out {
+      padding: 0px 20px 20px 60px;
+    }
+    .body-container.in {
+      padding: 0px 20px 20px 310px;
+    }
+    .check-but, .add-but, .remove-but {
+      border: none;
+      background: none;
+      margin: 0;
+      padding: 0;
+      height: 24px;
+      float: right;
+      z-index: 10;
+      position: relative;
+    }
+    .remove-but { 
+      display: none;
+      padding: 0;
+      margin: 0;
+      float: right;
+    }
+    .remove-but:hover .material-icons {
+      color: #ff0000;
+    }
+    .remove-but .material-icons {
+      font-size: 18px;
+    }
+    .unignore-but, .check-but.already-selected, .edit-but, .save-but { 
+      background: none;
+      border: none;
+      margin: 0;
+      padding: 0;
+      float: right;
+      height: 18px;
+      z-index: 10;
+      position: relative;
+    }
+    .unignore-but:hover .material-icons {
+      color: #ff0000;
+    }
+    .unignore-but .material-icons {
+      font-size: 18px;
+    }
+    .edit-but:hover .material-icons, .save-but:hover .material-icons {
+      color: #99FF99;
+    }
+    .edit-but .material-icons, .save-but .material-icons {
+      font-size: 18px;
+    }
+    .save-but {
+      display:none;
+    }
+    
+    i.selected-check.material-icons {
+        width: 25px;
+    }
+    .check-but {
+      display: none;
+    }
+    .check-but i:before {
+      content: "checkmark";
+      color: #00AA00;
+    } 
+    .check-but i:hover:before {
+      content: "close";
+      color: #ff0000;
+    } 
+    .add-but i:before {
+      content: "add";
+      color: #00496B;
+    } 
+    .add-but i:hover:before {
+      color: #00AA00;
+    } 
+
+    .check-but.already-selected i:before {
+      content: "";
+      display: none;
+    } 
+    .check-but.already-selected i {
+      color: #fff;
+      font-size: 18px;
+    } 
+    .check-but.already-selected i:hover {
+      color: #ff0000;
+    } 
+
+    .datagrid table thead th.action-column, .datagrid table tbody td.action-column {
+      width: 50px;
+    }
+    td i {
+      width: 25px;
+    }
+    .project-detail-menu i.material-icons {
+      float: left;
+      padding-right: 10px;
+    }
+    .keywordList, .stopwordList, .settingsList {
+      list-style-type: none;
+      color: #fff;
+      margin-left: 10px;
+      padding-left: 20px;
+    }
+    .keywordList {
+      padding-left: 0px;
+    }
+    .keywordList li, .stopwordList li, .settingsList li {
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+    .keywordList li.keyword_li {
+      padding-left: 10px;
+    }
+    .keywordList li.keyword_li.group {
+      padding-left: 0;
+    }
+    .keywordList li.keyword_li.add-new {
+      padding-left: 0;
+    }
+    .nav .open ul.keywordList > li, .nav .open ul.stopwordList > li, .nav .open ul.settingsList > li  {
+        background-color: transparent;
+    }
+    #keyword-menu, #stopword-menu, #settings-menu, #project-detail-menu {
+      background-color: rgba(126, 169, 39, 0.5);
+      color: #fff;
+      height: 1px;
+      display:none;
+    }
+    .dropdown-menus {
+      display:none;
+    }
+    #keyword-menu.open, #stopword-menu.open, #settings-menu.open, #project-detail-menu.open {
+      height: auto;
+      display:block;
+    }
+    #keyword_menu_count, #stopword_menu_count {
+      color: #aaa;
+    }
+    td.keyword_column:hover .remove-but, td.stopword_column:hover .remove-but {
+      display: inline; 
+    }
+    .placeholder-del {
+      display: inline;
+      width: 40px;
+      float: right;
+      z-index: 10;
+      position: relative;
+    }
+    #clearkeyphrase {
+      background-color: #aa0000;
+      height: 18px;
+    }
+    .settings_fields {
+      width: 50px;
+      float: right;
+      margin: 0px 10px;
+      height: 18px;
+      font-size: 12px;
+      color: #000;
+      text-align: right;
+      padding: 0px 5px;
+    }
+    .settings_select_fields {
+      width: 100px;
+      float: right;
+      margin: 0px 10px;
+      height: 18px;
+      font-size: 12px;
+      color: #000;
+      text-align: right;
+      padding: 0px 5px;
+    }
+    .keyword-field {
+      width: 220px;
+      margin: 0;
+      height: 18px;
+      font-size: 12px;
+      color: #fff;
+      padding: 0px 5px;
+      border: none;
+      background-color: transparent;
+      background: none !important;
+    }
+    .keyword-field.editable {
+      border: solid #999 1px;
+      background-color: #fff !important;
+      color: #000;
+    }
+    .change_settings_but {
+      height: 30px;
+      background-color: #ccc;
+      width: 258px;
+      margin: 10px 0;
+    }
+    input[type="submit" i].change_settings_but {
+      background-color: #ccc;
+    }
+    input[type="checkbox"] {
+      margin: 0;
+    }
+    #project-detail-menu {
+      list-style-type: none;
+      padding-left: 15px;
+    }
+    #project-detail-menu li {
+      line-height: 25px;
+    }
+    #project-detail-menu li.active {
+      background-color: rgba(126, 169, 39, 0.5);
+    }
+    .datagrid table tbody td.topic-words {
+      min-width: 200px;
+      width: auto;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .topic_content {
+      z-index: 0;
+      position: relative;
+    }
+    .topic-num {
+      min-width: 100px;
+    }
+    .tooltip {
+      z-index: 100;
+    }
+    .add-group {
+      float:right;
+    }
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 3px 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #292b2c;
+        text-align: inherit;
+        white-space: nowrap;
+        background: 0 0;
+        border: 0;
+    }
+    .dropdown-header {
+      margin: 0;
+      padding-left: 10px;
+    }
+    .dropdown-divider {
+        height: 1px;
+        margin: 2px 0;
+        overflow: hidden;
+        background-color: #eceeef;
+    }
+    .dropdown-item:focus, .dropdown-item:hover {
+        color: #1d1e1f;
+        text-decoration: none;
+        background-color: #f7f7f9;
+    }
+    </style>
+    <title>Thinktiv Web Analytics Tool - Exploration Collect</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="/static/sankey.js"></script>
+    <script src="{% static 'hamburger.js' %}"></script>
+  </head>
+  <body>
+{% with keyphrase=htmlResults.selected_keyphrase %}
+{% with thisURL=htmlResults.selected_url %}
+    <form action="/nfl_research/explore_collect/" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="projectname" value="{{htmlResults.projectname}}" />
+    <input type="hidden" name="explorename" value="{{htmlResults.explorename}}" />
+    <input type="hidden" id="selected_keyphrase" name="selected_keyphrase" value="{{htmlResults.selected_keyphrase}}" />
+    <input type="hidden" id="changed_settings" name="changed_settings" value="" />
+
+    <nav class="navbar navbar-m2p sidebar collapse in" id="thinktiv_navbar" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#thinktiv_navbar" aria-expanded="true">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    Thinktiv<b>Insights</b>
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <!-- Dashboard -->
+                    <!-- open class for selected -->
+                    <li class="">
+                      <a href="/">
+                          <span class="pull-right showopacity glyphicon material-icons">av_timer</span> Dashboard
+                      </a>
+                    </li>
+                    <li class="">
+                      <a href="/nfl_research/projects/">
+                          <span class="pull-right showopacity glyphicon material-icons">burst_mode</span> All Projects
+                      </a>
+                    </li>
+                    <li class="">
+                        <a href="#" id="detail-menu" class="dropdown-toggle" data-target="#project-detail-menu">
+                            <span class="menu-icon pull-right showopacity glyphicon material-icons">label</span>
+                            Project Detail <span class="caret"></span>
+                        </a>
+                        <ul id="project-detail-menu" class="project-detail-menu dropdown-menus" aria-labelledby="detail-menu" role="menu">
+                            <li><a href="/nfl_research/project/?project={{htmlResults.projectname}}"><i class="material-icons">list</i> Project Home</a></li>
+                            <li class="active"><a href="#"><i class="material-icons">list</i> Exploration - Collect</a></li>
+                            <li><a href="#"><i class="material-icons">exit_to_app</i> Exploration - Assess</a></li>
+                            <li><a href="#"><i class="material-icons">exit_to_app</i> Exploration - Visualize</a></li>
+                            <li><a href="#"><i class="material-icons">exit_to_app</i> Exploration - Export</a></li>
+                        </ul>
+                    </li>
+                    <li class="separator">Content</li>
+                    <!-- Settings -->
+                    <li>
+                        <a href="#" id="settings_menu_toggle"  class="dropdown-toggle" data-target="#settings-menu">
+                            <span class="menu-icon pull-right showopacity glyphicon material-icons">chat_bubble_outline</span>
+                            Settings <span class="caret"></span>
+                        </a>
+                        <div id="settings-menu" class="settings-menu dropdown-menus" aria-labelledby="settings_menu_toggle" role="menu">
+                              <ul class="settingsList" id="settings_list">
+                                <li>
+                                  <a href="#" data-toggle="tooltip" title="Choose which Text document to use for analysis.">Text Document</a>
+                                  <select class="settings_select_fields" name="text_document">
+                                    <option value="text"{% if htmlResults.settings.text_document == 'text' %} selected{% endif %}>Full Text</option>
+                                    <option value="body"{% if htmlResults.settings.text_document == 'body' %} selected{% endif %}>Body Text</option>
+                                    <option value="links"{% if htmlResults.settings.text_document == 'links' %} selected{% endif %}>Links Text</option>
+                                    <option value="nav"{% if htmlResults.settings.text_document == 'nav' %} selected{% endif %}>Nav Text</option>
+                                  </select>
+                                </li>
+                                <li><a href="#" data-toggle="tooltip" title="The maximum number of the highest frequency keywords to return.">Freq. Keywords Max Results</a><input type="text" class="settings_fields" name="keyword_frequency_max_results" value="{{ htmlResults.settings.keyword_frequency_max_results }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The maximum number of the highest frequency keywords to return.">Minimum Freq. for Keywords</a><input type="text" class="settings_fields" name="keyword_min_frequency" value="{{ htmlResults.settings.keyword_min_frequency }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The minimum length in characters of the Long words which are used in the context.">Long Word Length</a><input type="text" class="settings_fields" name="long_word_length" value="{{ htmlResults.settings.long_word_length }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The minimum frequency that a long word must have to be returned.">Long Word Min Freq.</a><input type="text" class="settings_fields" name="long_word_min_frequency" value="{{ htmlResults.settings.long_word_min_frequency }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The maximum number of long words to return.">Long Word Max Results</a><input type="text" class="settings_fields" name="long_word_max_results" value="{{ htmlResults.settings.long_word_max_results }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The number of words to span when collecting Bigrams (2 word phrases). ex: 3 would result in the words 'John jumped sideways' as 'John jumped', 'John sideways', 'jumped sideways'.">Collocation Word Width</a><input type="text" class="settings_fields" name="collo_word_width" value="{{ htmlResults.settings.collo_word_width }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The minimum number of occurrences of key phrases to be returned.">Collocation Freq Minimum</a><input type="text" class="settings_fields" name="collo_freq_min" value="{{ htmlResults.settings.collo_freq_min }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The maximum number of results to be returned.">Collocation Max Results</a><input type="text" class="settings_fields" name="collo_max_results" value="{{ htmlResults.settings.collo_max_results }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The maximum number of surrounding characters to return in the context sentences.">Context Sentence Length</a><input type="text" class="settings_fields" name="context_sentence_length" value="{{ htmlResults.settings.context_sentence_length }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The maximum number of sentences to return for each URL.">Context Max Results</a><input type="text" class="settings_fields" name="context_max_results" value="{{ htmlResults.settings.context_max_results }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The number of LDA Topics to generate.">Number of LDA Topics</a><input type="text" class="settings_fields" name="lda_topics_count" value="{{ htmlResults.settings.lda_topics_count }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The number of words to return per LDA Topics ordered by highest probability first.">Word per LDA Topic</a><input type="text" class="settings_fields" name="lda_word_per_topic" value="{{ htmlResults.settings.lda_word_per_topic }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The number of passes to make when generating the Topic model. higher = slower but more accurate.">LDA Topic Model Passes</a><input type="text" class="settings_fields" name="lda_passes" value="{{ htmlResults.settings.lda_passes }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="Use Stem words (ie: manager, management, manages: all = manage).">Use Stem Words</a><input type="checkbox" class="settings_fields" value="1" name="use_stem_words"{% if htmlResults.settings.use_stem_words == '1' %} checked{% endif %} /></li>
+                                <li><a href="#" data-toggle="tooltip" title="Use your selected groups of keywords to treat all as the same.">Use Groups</a><input type="checkbox" class="settings_fields" value="1" name="use_groups"{% if htmlResults.settings.use_groups == '1' %} checked{% endif %} /></li>
+                                <li><a href="#" data-toggle="tooltip" title="What data do you want to use in tables to assess keywords.">Ranking Type</a>
+                                  <select class="settings_select_fields" name="ranking_type">
+                                    <option value="freqavg"{% if htmlResults.settings.ranking_type == 'freqavg' %} selected{% endif %}>Frequency Average</option>
+                                    <option value="freq"{% if htmlResults.settings.ranking_type == 'freq' %} selected{% endif %}>Raw Frequency Count</option>
+                                    <option value="position"{% if htmlResults.settings.ranking_type == 'position' %} selected{% endif %}>Positional Score Totals</option>
+                                    <option value="firstpos"{% if htmlResults.settings.ranking_type == 'firstpos' %} selected{% endif %}>First Position Scores</option>
+                                  </select>
+                                </li>
+                                <li><a href="#" data-toggle="tooltip" title="Use averages instead of raw freq counts for keywords (more accurate).">Group URLs by</a>
+                                  <select class="settings_select_fields" name="group_by">
+                                    <option value="url"{% if htmlResults.settings.group_by == 'url' %} selected{% endif %}>URL</option>
+                                    <option value="company"{% if htmlResults.settings.group_by == 'company' %} selected{% endif %}>Company</option>
+                                    {% for colHeadLabel in htmlResults.projectdata_cols|slice:"2:-6" %}
+                                        <option value="{{ colHeadLabel }}"{% if htmlResults.settings.group_by == colHeadLabel %} selected{% endif %}>{{ colHeadLabel }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </li>
+                                <li><a href="#" data-toggle="tooltip" title="Use averages instead of raw freq counts for keywords (more accurate).">URL Grouping Calc</a>
+                                  <select class="settings_select_fields" name="grouping_calc">
+                                    <option value="highest"{% if htmlResults.settings.grouping_calc == 'highest' %} selected{% endif %}>Highest</option>
+                                    <option value="avg"{% if htmlResults.settings.grouping_calc == 'avg' %} selected{% endif %}>Average</option>
+                                    <option value="nonzeroavg"{% if htmlResults.settings.grouping_calc == 'nonzeroavg' %} selected{% endif %}>Non-zero Average</option>
+                                    <option value="total"{% if htmlResults.settings.grouping_calc == 'total' %} selected{% endif %}>Total</option>
+                                  </select>
+                                </li>
+                                <li><a href="#" data-toggle="tooltip" title="The number of top positioned words to assess. Leave as 0 to assess the entire page.  Typically the top 100 words are the ones of importance above the fold.">Words per Page Limit</a><input type="text" class="settings_fields" name="word_limit" value="{{ htmlResults.settings.word_limit }}" /></li>
+                                <li><a href="#" data-toggle="tooltip" title="The percentage value for the last word on the page when compared to first. Example: if the last word is 50% as important as the first then enter 0.50 - value must be between 0.0 and 1.0">Last word value</a><input type="text" class="settings_fields" name="last_word_value" value="{{ htmlResults.settings.last_word_value }}" /></li>
+                                <li><input type="submit" name="change_settings" value="Update Settings" class="change_settings_but" id="change_settings_but" /></li>
+                              </ul>
+                        </div>
+                    </li>
+                    <!-- Keywords/Phrases -->
+                    <li class="dropdown">
+                        <a href="#" id="keyword_menu_toggle" class="dropdown-toggle" data-target="#keyword-menu">
+                            <span class="menu-icon pull-right showopacity glyphicon material-icons">description</span>
+                            Keywords/Phrases <span id="keyword_menu_count">0</span> <span class="caret"></span>
+                        </a>
+                        <div id="keyword-menu" class="keyword-menu dropdown-menus" aria-labelledby="keyword_menu_toggle" role="menu">
+                            
+                                <ul class="keywordList" id="keyword_list">
+                                </ul>
+                           
+                        </div>
+                    </li>
+                    <!-- Stopwords -->
+                    <li>
+                        <a href="#" id="stopword_menu_toggle"  class="dropdown-toggle" data-target="#stopword-menu" aria-expanded="false">
+                            <span class="menu-icon pull-right showopacity glyphicon material-icons">description</span>
+                            Ignored Words <span id="stopword_menu_count">0</span> <span class="caret"></span>
+                        </a>
+                        <div id="stopword-menu" class="stopword-menu dropdown-menus" aria-labelledby="stopword_menu_toggle" role="menu">
+                            
+                                <ul class="stopwordList" id="stopword_list">
+                                </ul>
+                           
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>    
+    
+    <div class="body-container in">
+    <h1>Keyphrase Analyzer - Results for "{{ keyphrase }}" on {{ thisURL }}</h1>
+    {% if htmlResults.error %}<div class="errormsg">{{htmlResults.error}}</div>{% endif %}
+
+    Clear Selected Keyword: {{ keyphrase }}<input type='submit' id="clearkeyphrase" name='newkeyphrase' value='' />
+
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Context of Keyword/Phrase</th>
+            <th>Occurrences</th>
+          </tr>
+        </thead>
+        <!-- tfoot>
+          <tr>
+            <td colspan="4">
+              <div id="paging">
+                <ul>
+                  <li><a href="#"><span>Previous</span></a></li>
+                  <li><a href="#" class="active"><span>1</span></a></li>
+                  <li><a href="#"><span>2</span></a></li>
+                  <li><a href="#"><span>3</span></a></li>
+                  <li><a href="#"><span>4</span></a></li>
+                  <li><a href="#"><span>5</span></a></li>
+                  <li><a href="#"><span>Next</span></a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tfoot -->
+        <tbody>
+          {% for result in htmlResults.results %}
+            <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+              <td>
+                <a class="" data-toggle="collapse" href="#{{result.filename}}" aria-expanded="false" aria-controls="{{result.filename}}">
+                  {{result.url}}
+                </a>
+                <div class="collapse" id="{{result.filename}}">
+                  {% for concord in result.concordance.0.0 %}
+                    {{ concord|safe }}<br />
+                  {% endfor %}
+                </div>
+              </td>
+              <td>{{result.concordance.0.1}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+   <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>LDA for all URLs</th>
+            <th colspan="{% if htmlResults.ldaModel|length > 0 %}{{htmlResults.ldaModel.0.1|length}}{% else %}0{% endif %}">Top Words in Topics</th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for ldaResult in htmlResults.ldaModel %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td class="topic-num">Topic #{{ ldaResult.0 }}</td>
+            {% for myword in ldaResult.1 %}
+            <td class="action-column topic-words keyword_column" data-keyphrase='{{ myword.0|lower }}' nowrap="nowrap">
+            <nobr>
+              <button class="check-but" type='button' data-toggle="tooltip" name='checkmark' data-keyphrase='{{ myword.0|lower }}' data-keyphraseorig='{{ myword.0 }}' title="Remove from your list of keywords for Assessment"><i class="selected-check material-icons"></i></button>
+              <div class="btn-group add-group">
+                <button type="button" class="add-but" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name='addkeyphrase' data-keyphrase='{{ myword.0|lower }}' data-keyphraseorig='{{ myword.0 }}' title="Add to your list of keywords for Assessment"><i class="material-icons"></i></button> 
+                <div class="dropdown-menu add-menu">
+                  <a class="dropdown-item add-to-list" data-keyphrase='{{ myword.0|lower }}' data-keyphraseorig='{{ myword.0 }}' href="#">
+                    Add to list
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <h6 class="dropdown-header">Add to Group:</h6>
+                  <div class="dropdown-divider"></div>
+                  <div class="groups">
+                    <a class="dropdown-item" href="#">Another action</a>
+                  </div>
+                </div>
+              </div>
+              <div class="placeholder-del">
+               <button class="remove-but" type='button' data-toggle="tooltip"  name='removekeyphrase' data-keyphrase='{{ myword.0|lower }}' data-keyphraseorig='{{ myword.0 }}' title="PERMANENT DELETE - Add to stop words"><i class="material-icons">delete</i></button> 
+              </div>
+              <span class="topic_content"><input type='submit' name='newkeyphrase' value='{{ myword.0 }}' /> / {{ myword.1|percentage:2 }}</span>
+            </nobr>
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+    
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Most Freq Keyphrases related to : "{{keyphrase}}"</th>
+            <th class="action-column"></th>
+            {% for sUrl in htmlResults.group_by_col_heads %} 
+            <th>{{sUrl}}</th>
+            {% endfor %}
+            <th>Total</th>
+            <th>Avg</th>
+            <th>Non-zero Avg</th>
+            <th>Max</th>
+            <th>Included in #</th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for keyCollocation in htmlResults.totalCollos %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td class="keyword_column">
+              <input type='submit' name='newkeyphrase' value='{{ keyCollocation.0.0 }} {{ keyCollocation.0.1 }}' />
+              <div class="placeholder-del">
+              <button class="remove-but" type='button' data-toggle="tooltip"  name='removekeyphrase' data-keyphrase='{{ keyCollocation.0.0|lower }} {{ keyCollocation.0.1|lower }}' data-keyphraseorig='{{ keyCollocation.0.0 }} {{ keyCollocation.0.1 }}' title="PERMANENT DELETE - Add to stop words"><i class="material-icons">delete</i></button> 
+              </div>
+            </td>
+            <td class="action-column" data-keyphrase='{{ keyCollocation.0.0|lower }} {{ keyCollocation.0.1|lower }}'>
+              <button class="check-but" type='button' data-toggle="tooltip" name='checkmark' data-keyphrase='{{ keyCollocation.0.0|lower }} {{ keyCollocation.0.1|lower }}' data-keyphraseorig='{{ keyCollocation.0.0 }} {{ keyCollocation.0.1 }}' title="Remove from your list of keywords for Assessment"><i class="selected-check material-icons"></i></button>
+              <div class="btn-group add-group">
+                <button type="button" class="add-but" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name='addkeyphrase' data-keyphrase='{{ keyCollocation.0.0|lower }} {{ keyCollocation.0.1|lower }}' data-keyphraseorig='{{ keyCollocation.0.0 }} {{ keyCollocation.0.1 }}' title="Add to your list of keywords for Assessment"><i class="material-icons"></i></button> 
+                <div class="dropdown-menu add-menu">
+                  <a class="dropdown-item add-to-list" data-keyphrase='{{ keyCollocation.0.0|lower }} {{ keyCollocation.0.1|lower }}' data-keyphraseorig='{{ keyCollocation.0.0 }} {{ keyCollocation.0.1 }}' href="#">
+                    Add to list
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <h6 class="dropdown-header">Add to Group:</h6>
+                  <div class="dropdown-divider"></div>
+                  <div class="groups">
+                    <a class="dropdown-item" href="#">Another action</a>
+                  </div>
+                </div>
+              </div>
+            </td>
+            {% if htmlResults.settings.ranking_type == 'freqavg' %}
+              {% for occurance in keyCollocation.1 %}
+                {% if forloop.counter == keyCollocation.1|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|floatformat:5|percentage }}</td>
+                {% endif %}
+              {% endfor %}
+            {% elif htmlResults.settings.ranking_type == 'position' %}
+              {% for key, occurance in keyCollocation.3.items %}
+                {% if forloop.counter == keyCollocation.3|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|percentage:0 }}</td>
+                {% endif %}
+              {% endfor %}
+            {% elif htmlResults.settings.ranking_type == 'firstpos' %}
+              {% for occurance in keyCollocation.4 %}
+                {% if forloop.counter == keyCollocation.4|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|percentage:0 }}</td>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for occurance in keyCollocation.2 %}
+                <td>{{ occurance|intorfloat:2 }}</td>
+              {% endfor %}
+            {% endif %}
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+
+    <!-- This is just for the first of the URLs -->
+    <!--
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Most Frequent Keyword Combos related to : "{{keyphrase}}"</th>
+            <th>Frequency Count</th>
+            <th></th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for collocation in htmlResults.results.0.collocations %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td><input type='submit' name='newkeyphrase' value='{{ collocation.0.0 }} {{ collocation.0.1 }}' /></td>
+            <td>{{ collocation.1 }}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+    
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Long Words Used</th>
+            <th>Frequency Count</th>
+            <th></th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for word in htmlResults.results.0.long_words %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td><input type='submit' name='newkeyphrase' value='{{ word.0 }}' /></td>
+            <td>{{ word.1 }}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Frequent Words Used</th>
+            <th>Frequency Count</th>
+            <th></th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for word in htmlResults.results.0.top_freq_words %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td><input type='submit' name='newkeyphrase' value='{{ word.0 }}' /></td>
+            <td>{{ word.1 }}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+  
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Most Frequent Long Words Used</th>
+            <th>Frequency Count</th>
+            <th></th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for word in htmlResults.results.0.freq_long_words %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td><input type='submit' name='newkeyphrase' value='{{ word.0 }}' /></td>
+            <td>{{ word.1 }}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+    -->
+
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Frequent Words Used</th>
+            <th></th>
+            {% for sUrl in htmlResults.group_by_col_heads %} 
+            <th>{{sUrl}}</th>
+            {% endfor %}
+            <th>Total</th>
+            <th>Avg</th>
+            <th>Non-zero Avg</th>
+            <th>Max</th>
+            <th>Included in #</th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for wordArr in htmlResults.totalFreqWords %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td class="keyword_column">
+              <input type='submit' name='newkeyphrase' value='{{ wordArr.0 }}' />
+              <div class="placeholder-del">
+              <button class="remove-but" type='button' data-toggle="tooltip"  name='removekeyphrase' data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' title="PERMANENT DELETE - Add to stop words"><i class="material-icons">delete</i></button> 
+              </div>
+            </td>
+            <td class="action-column" data-keyphrase='{{ wordArr.0|lower }}'>
+              <button class="check-but" type='button' data-toggle="tooltip" name='checkmark' data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' title="Remove from your list of keywords for Assessment"><i class="selected-check material-icons"></i></button>
+              <div class="btn-group add-group">
+                <button type="button" class="add-but" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name='addkeyphrase' data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' title="Add to your list of keywords for Assessment"><i class="material-icons"></i></button> 
+                <div class="dropdown-menu add-menu">
+                  <a class="dropdown-item add-to-list" data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' href="#">
+                    Add to list
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <h6 class="dropdown-header">Add to Group:</h6>
+                  <div class="dropdown-divider"></div>
+                  <div class="groups">
+                    <a class="dropdown-item" href="#">Another action</a>
+                  </div>
+                </div>
+              </div>
+            </td>
+            {% if htmlResults.settings.ranking_type == 'freqavg' %}
+              {% for occurance in wordArr.1 %}
+                {% if forloop.counter == wordArr.1|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|floatformat:5|percentage }}</td>
+                {% endif %}
+              {% endfor %}
+            {% elif htmlResults.settings.ranking_type == 'position' %}
+              {% for key, occurance in wordArr.3.items %}
+                {% if forloop.counter == wordArr.3|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|percentage:0 }}</td>
+                {% endif %}
+              {% endfor %}
+            {% elif htmlResults.settings.ranking_type == 'firstpos' %}
+              {% for occurance in wordArr.4 %}
+                {% if forloop.counter == wordArr.4|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|percentage:0 }}</td>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for occurance in wordArr.2 %}
+                <td>{{ occurance|intorfloat:2 }}</td>
+              {% endfor %}
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+  
+    <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th>Frequent Long Words Used</th>
+            <th></th>
+            {% for sUrl in htmlResults.group_by_col_heads %} 
+            <th>{{sUrl}}</th>
+            {% endfor %}
+            <th>Total</th>
+            <th>Avg</th>
+            <th>Non-zero Avg</th>
+            <th>Max</th>
+            <th>Included in #</th>
+         </tr>
+        </thead>
+        <tbody>
+          {% for wordArr in htmlResults.totalFreqLongWords %}
+          <tr class="{% if forloop.counter|divisibleby:2 %}alt{% else %}normal{% endif %}">
+            <td class="keyword_column">
+              <input type='submit' name='newkeyphrase' value='{{ wordArr.0 }}' />
+              <div class="placeholder-del">
+              <button class="remove-but" type='button' data-toggle="tooltip"  name='removekeyphrase' data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' title="PERMANENT DELETE - Add to stop words"><i class="material-icons">delete</i></button> 
+              </div>
+            </td>
+            <td class="action-column" data-keyphrase='{{ wordArr.0|lower }}'>
+              <button class="check-but" type='button' data-toggle="tooltip" name='checkmark' data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' title="Remove from your list of keywords for Assessment"><i class="selected-check material-icons"></i></button>
+              <div class="btn-group add-group">
+                <button type="button" class="add-but" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name='addkeyphrase' data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' title="Add to your list of keywords for Assessment"><i class="material-icons"></i></button> 
+                <div class="dropdown-menu add-menu">
+                  <a class="dropdown-item add-to-list" data-keyphrase='{{ wordArr.0|lower }}' data-keyphraseorig='{{ wordArr.0 }}' href="#">
+                    Add to list
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <h6 class="dropdown-header">Add to Group:</h6>
+                  <div class="dropdown-divider"></div>
+                  <div class="groups">
+                    <a class="dropdown-item" href="#">Another action</a>
+                  </div>
+                </div>
+              </div>
+            </td>
+            {% if htmlResults.settings.ranking_type == 'freqavg' %}
+              {% for occurance in wordArr.1 %}
+                {% if forloop.counter == wordArr.1|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|floatformat:5|percentage }}</td>
+                {% endif %}
+              {% endfor %}
+            {% elif htmlResults.settings.ranking_type == 'position' %}
+              {% for key, occurance in wordArr.3.items %}
+                {% if forloop.counter == wordArr.3|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|percentage:0 }}</td>
+                {% endif %}
+              {% endfor %}
+            {% elif htmlResults.settings.ranking_type == 'firstpos' %}
+              {% for occurance in wordArr.4 %}
+                {% if forloop.counter == wordArr.4|length %}
+                  <td>{{ occurance }}</td>
+                {% else %}
+                  <td>{{ occurance|percentage:0 }}</td>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for occurance in wordArr.2 %}
+                <td>{{ occurance|intorfloat:2 }}</td>
+              {% endfor %}
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> 
+
+
+
+    <div id="chart"></div>
+    <script type="text/javascript" src="{% static 'modal.js' %}"></script>
+    <script type="text/javascript">
+      var selectedKeywords = {% if htmlResults.allkeys %}{{ htmlResults.allkeys|safe }}{% else %}[]{% endif %};
+      var stopwords = {% if htmlResults.stopwords %}{{ htmlResults.stopwords|safe }}{% else %}[]{% endif %};
+      
+      function reloadKeywords(keywords = selectedKeywords) {
+        var newHTML = '<li class="keyword_li add-new">' + 
+            '<input type="text" class="keyword-field" value="Add New Keyword/Phrase/Group" disabled="disabled" />' +
+            '<button class="edit-but" type="button" data-toggle="tooltip"  name="edit-but" data-keyphrase=" " title="Add New"><i class="material-icons">add</i></button>' + 
+            '<button class="save-but" type="button" data-toggle="tooltip"  name="save-but" data-keyphrase=" " title="Save"><i class="material-icons">save</i></button>' + 
+            '</li>';
+        var keywordCount = 0;
+        $.each(keywords, function( gIndex, groupValue ) {
+          if (groupValue.length > 0) {
+            $.each(groupValue, function( index, value ) {
+              keywordCount += 1;
+              var groupClass = "";
+              if (index == 0) {
+                groupClass = " group";
+              } 
+              newHTML = newHTML + '<li class="keyword_li' + groupClass + '">' + 
+                '<input type="text" class="keyword-field' + groupClass + '" value="' + value + '" disabled="disabled" />' +
+                '<button class="check-but already-selected' + groupClass + '" type="button" data-toggle="tooltip"  name="checkmark" data-keyphrase="' + value.toLowerCase() + '" data-keyphraseorig="' + value + '" title="Remove"><i class="material-icons">close</i></button>' +
+                '<button class="edit-but' + groupClass + '" type="button" data-toggle="tooltip"  name="edit-but" data-keyphrase="' + value.toLowerCase() + '" title="Edit"><i class="material-icons">edit</i></button>' + 
+                '<button class="save-but' + groupClass + '" type="button" data-toggle="tooltip"  name="save-but" data-keyphrase="' + value.toLowerCase() + '" title="Save"><i class="material-icons">save</i></button>' + 
+                '</li>';
+            });
+          }
+        });
+        $('#keyword_list').html(newHTML);
+        $('#keyword_menu_count').html("(" + keywordCount + ")");
+
+        newHTML = '';
+        $.each(stopwords, function( index, value ) {
+          newHTML = newHTML + '<li class="stopword_li">' + value + '<button class="unignore-but" type="button" data-toggle="tooltip"  name="unignore_button" data-keyphrase="' + value.toLowerCase() + '" title="un-ignore"><i class="material-icons">close</i></button></li>';
+        });
+        $('#stopword_list').html(newHTML);
+        $('#stopword_menu_count').html("(" + stopwords.length + ")");
+        
+        $(".add-but").show();
+        $(".check-but").hide();
+        $(".check-but.already-selected").show();
+        for (var thisline in keywords) {
+          for (var thiskey in keywords[thisline]) {
+            if (keywords[thisline][thiskey]) {
+              $("td[data-keyphrase='" + keywords[thisline][thiskey].toLowerCase() + "'] .add-but").hide();
+              $("td[data-keyphrase='" + keywords[thisline][thiskey].toLowerCase() + "'] .check-but").show();
+            }
+          }
+        }
+
+        for (var thiskey in stopwords) {
+          $($("td[data-keyphrase='" + stopwords[thiskey].toLowerCase() + "']").parent()).hide();
+        }
+      }
+
+      function hookupKeywordClickTriggers(initial) {
+        if (initial == false) {
+          $(".already-selected").click(function(e) {
+              var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+              var thisData = {
+                action: "delete",
+                projectname: "{{htmlResults.projectname}}",
+                explorename: "{{htmlResults.explorename}}",
+                csrfmiddlewaretoken:"{{csrf_token}}",
+                keyword: $(this).data('keyphraseorig'),
+              };
+              waitingDialog.show('Please wait while keyword removed');
+              $.ajax({
+                context: this,
+                type: "POST",
+                url: url,
+                data: thisData, // serializes the form's elements.
+                success: function(data)
+                {
+                  if (data.success == 'true' && data.keywords) {
+                    waitingDialog.hide();
+                    selectedKeywords = data.keywords;
+                    reloadKeywords();
+                    hookupKeywordClickTriggers(false);
+                    //$('#keyword_menu_toggle').dropdown('toggle');
+                    $('#keyword-menu').toggleClass('open', true);
+                  } else {
+                    waitingDialog.hide();
+                    alert("There was an error deleting keyword: " + data.errorMsg); // show response from the python script.
+                  }
+                },
+                error: function(data)
+                {
+                  waitingDialog.hide();
+                  alert("There was an error deleting keyword: " + data.statusText); // show error
+                },
+              });
+
+                // e.preventDefault(); // avoid to execute the actual submit of the form.
+          });
+        }
+        $(".edit-but").click(function(e) {
+          if ($(this).siblings( ".keyword-field" ).attr('disabled')) {
+              $(this).siblings( ".keyword-field" ).removeAttr('disabled');
+              $(this).siblings( ".keyword-field" ).toggleClass('editable', true);
+              $(this).siblings( ".save-but" ).show();     
+          } else {
+              $(this).siblings( ".keyword-field" ).attr('disabled', 'disabled');
+              $(this).siblings( ".keyword-field" ).toggleClass('editable', false);
+              $(this).siblings( ".save-but" ).hide();  
+          }      
+        });
+
+        $(".save-but").click(function(e) {
+            var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+            var thisData = {
+              action: "save",
+              projectname: "{{htmlResults.projectname}}",
+              explorename: "{{htmlResults.explorename}}",
+              csrfmiddlewaretoken:"{{csrf_token}}",
+              keyword: $(this).data('keyphrase'),
+              newkeyword: $(this).siblings( ".keyword-field" ).val(),
+            };
+            waitingDialog.show('Please wait while keyword saved');
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, // serializes the form's elements.
+              success: function(data)
+              {
+                if (data.success == 'true' && data.keywords) {
+                  waitingDialog.hide();
+                  selectedKeywords = data.keywords;
+                  reloadKeywords();
+                  hookupKeywordClickTriggers(false);
+                  $('#keyword-menu').toggleClass('open', true);
+                } else {
+                  waitingDialog.hide();
+                  alert("There was an error editing keyword: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                waitingDialog.hide();
+                alert("There was an error editing keyword: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+        $(".unignore-but").click(function(e) {
+            var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+            var thisData = {
+              action: "unignore",
+              projectname: "{{htmlResults.projectname}}",
+              explorename: "{{htmlResults.explorename}}",
+              csrfmiddlewaretoken:"{{csrf_token}}",
+              keyword: $(this).data('keyphrase'),
+            };
+            waitingDialog.show('Please wait while keyword unignored');
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, // serializes the form's elements.
+              success: function(data)
+              {
+                if (data.success == 'true' && data.keywords) {
+                  waitingDialog.hide();
+                  selectedKeywords = data.keywords;
+                  stopwords = data.stopwords;
+                  reloadKeywords();
+                  alert("Please Refresh page to show keywords in report");
+                  hookupKeywordClickTriggers(false);
+                } else {
+                  waitingDialog.hide();
+                  alert("There was an error unignoring keyword: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                waitingDialog.hide();
+                alert("There was an error unignoring keyword: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+      }
+
+      $(document).ready(function() {
+        reloadKeywords(); //load initial keywords selected.
+        
+        $(".navbar-toggle").click(function(e) {
+          if ($(this).attr('aria-expanded') == "true") {
+            $(".body-container").removeClass( "in" ).addClass( "out" );
+          } else {
+            $(".body-container").removeClass( "out" ).addClass( "in" );
+          }
+        });
+        
+        $('#clearkeyphrase').click(function(e) {
+          $('#selected_keyphrase').val('');
+        });
+        
+        $('#change_settings_but').click(function(e) {
+          $('#changed_settings').val('true');
+        });
+      
+        $('.dropdown-toggle').on('click', function (event) {
+            $($(this).data('target')).toggleClass('open');
+            event.preventDefault();
+        });
+        //$("#stopword_menu_toggle").dropdown('toggle');
+        
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $(".add-but").click(function(e) {
+            var thisMenu = $(this).siblings('.add-menu').children('.groups');
+            var thisKeyword = $(this).data('keyphrase');
+            newHTML = '';
+            $.each(selectedKeywords, function( index, value ) {
+              if (value.length > 0) {
+                newHTML = newHTML + '<a class="dropdown-item add-to-group" data-keyphrase="' + thisKeyword + '" data-keyphraseorig="' + thisKeyword + '" data-groupkey="' + value[0].toLowerCase() + '" href="#">' +
+                    value[0] +
+                    '</a>';
+              }
+            });
+            thisMenu.html(newHTML);        
+            
+            thisMenu.children(".add-to-group").click(function(e) {
+                var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+                var thisData = {
+                  action: "add",
+                  projectname: "{{htmlResults.projectname}}",
+                  explorename: "{{htmlResults.explorename}}",
+                  csrfmiddlewaretoken:"{{csrf_token}}",
+                  keyword: $(this).data('keyphraseorig'),
+                  group: $(this).data('groupkey'),
+                };
+                waitingDialog.show('Please wait while keyword added');
+                $.ajax({
+                  context: this,
+                  type: "POST",
+                  url: url,
+                  data: thisData, // serializes the form's elements.
+                  success: function(data)
+                  {
+                    if (data.success == 'true' && data.keywords) {
+                      waitingDialog.hide();
+                      selectedKeywords = data.keywords;
+                      reloadKeywords();
+                      //$('#keyword_menu_toggle').dropdown('toggle');
+                      $('#keyword-menu').toggleClass('open', true);
+                      hookupKeywordClickTriggers(false);
+                    } else {
+                      waitingDialog.hide();
+                      alert("There was an error adding keyword: " + data.errorMsg); // show response from the python script.
+                    }
+                  },
+                  error: function(data)
+                  {
+                    waitingDialog.hide();
+                    alert("There was an error adding keyword: " + data.statusText); // show error
+                  },
+                });
+
+                // e.preventDefault(); // avoid to execute the actual submit of the form.
+            });          
+        });
+          
+        $(".add-to-list").click(function(e) {
+            var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+            var thisData = {
+              action: "add",
+              projectname: "{{htmlResults.projectname}}",
+              explorename: "{{htmlResults.explorename}}",
+              csrfmiddlewaretoken:"{{csrf_token}}",
+              keyword: $(this).data('keyphraseorig'),
+            };
+            waitingDialog.show('Please wait while keyword added');
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, // serializes the form's elements.
+              success: function(data)
+              {
+                if (data.success == 'true' && data.keywords) {
+                  waitingDialog.hide();
+                  selectedKeywords = data.keywords;
+                  reloadKeywords();
+                  //$('#keyword_menu_toggle').dropdown('toggle');
+                  $('#keyword-menu').toggleClass('open', true);
+                  hookupKeywordClickTriggers(false);
+                } else {
+                  waitingDialog.hide();
+                  alert("There was an error adding keyword: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                waitingDialog.hide();
+                alert("There was an error adding keyword: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+        
+        $(".check-but").click(function(e) {
+            var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+            var thisData = {
+              action: "delete",
+              projectname: "{{htmlResults.projectname}}",
+              explorename: "{{htmlResults.explorename}}",
+              csrfmiddlewaretoken:"{{csrf_token}}",
+              keyword: $(this).data('keyphraseorig'),
+            };
+            waitingDialog.show('Please wait while keyword removed');
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, // serializes the form's elements.
+              success: function(data)
+              {
+                if (data.success == 'true' && data.keywords) {
+                  waitingDialog.hide();
+                  selectedKeywords = data.keywords;
+                  reloadKeywords();
+                  //$('#keyword_menu_toggle').dropdown('toggle');
+                  $('#keyword-menu').toggleClass('open', true);
+                  hookupKeywordClickTriggers(false);
+                } else {
+                  waitingDialog.hide();
+                  alert("There was an error deleting keyword: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                waitingDialog.hide();
+                alert("There was an error deleting keyword: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+
+        $(".remove-but").click(function(e) {
+            var url = "/nfl_research/explore_collect_keyword/"; // the script where you handle the form input.
+            var thisData = {
+              action: "remove",
+              projectname: "{{htmlResults.projectname}}",
+              explorename: "{{htmlResults.explorename}}",
+              csrfmiddlewaretoken:"{{csrf_token}}",
+              keyword: $(this).data('keyphraseorig'),
+            };
+            waitingDialog.show('Please wait while keyword ignored');
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, // serializes the form's elements.
+              success: function(data)
+              {
+                if (data.success == 'true' && data.keywords) {
+                  waitingDialog.hide();
+                  selectedKeywords = data.keywords;
+                  stopwords = data.stopwords;
+                  reloadKeywords();
+                  hookupKeywordClickTriggers(false);
+                  //$('#stopword_menu_toggle').dropdown('toggle');
+                  $('#stopword-menu').toggleClass('open', true);
+                } else {
+                  waitingDialog.hide();
+                  alert("There was an error removing keyword: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                waitingDialog.hide();
+                alert("There was an error removing keyword: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+
+
+        hookupKeywordClickTriggers(true);
+
+        /*
+        $(".scrape-it").click(function() {
+          waitingDialog.show('Please wait while sites are scraped');
+          //setTimeout(function () {waitingDialog.hide();}, 2000);
+        });
+        */
+      });
+    
+    
+      var units = "Widgets";
+
+      // set the dimensions and margins of the graph
+      var margin = {top: 10, right: 10, bottom: 10, left: 10},
+          width = 1800 - margin.left - margin.right,
+          height = 10000 - margin.top - margin.bottom;
+
+      // format variables
+      var formatNumber = d3.format(",.0f"),    // zero decimal places
+          format = function(d) { return formatNumber(d) + " " + units; },
+          color = d3.scaleOrdinal(d3.schemeCategory20);
+
+      // append the svg object to the body of the page
+      var svg = d3.select("#chart").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", 
+                "translate(" + margin.left + "," + margin.top + ")");
+
+      // Set the sankey diagram properties
+      var sankey = d3.sankey()
+          .nodeWidth(36)
+          .nodePadding(40)
+          .size([width, height]);
+
+      var path = sankey.link();
+    
+      // load the data
+    
+      d3.csv("{% static 'sankey2.csv' %}", function(error, data) {
+ 
+        //set up graph in same style as original example but empty
+        graph = {"nodes" : [], "links" : []};
+
+        data.forEach(function (d) {
+          graph.nodes.push({ "name": d.source });
+          graph.nodes.push({ "name": d.target });
+          graph.links.push({ "source": d.source,
+                             "target": d.target,
+                             "value": +d.value });
+         });
+
+        // return only the distinct / unique nodes
+        graph.nodes = d3.keys(d3.nest()
+          .key(function (d) { return d.name; })
+          .object(graph.nodes));
+
+        // loop through each link replacing the text with its index from node
+        graph.links.forEach(function (d, i) {
+          graph.links[i].source = graph.nodes.indexOf(graph.links[i].source);
+          graph.links[i].target = graph.nodes.indexOf(graph.links[i].target);
+        });
+
+        // now loop through each nodes to make nodes an array of objects
+        // rather than an array of strings
+        graph.nodes.forEach(function (d, i) {
+          graph.nodes[i] = { "name": d };
+        });
+
+        sankey
+            .nodes(graph.nodes)
+            .links(graph.links)
+            .layout(32);
+
+        // add in the links
+        var link = svg.append("g").selectAll(".link")
+            .data(graph.links)
+          .enter().append("path")
+            .attr("class", "link")
+            .attr("d", path)
+            .style("stroke-width", function(d) { return Math.max(1, d.dy); })
+            .sort(function(a, b) { return b.dy - a.dy; });
+
+        // add the link titles
+        link.append("title")
+              .text(function(d) {
+              return d.source.name + " → " + 
+                      d.target.name + "\n" + format(d.value); });
+
+        // add in the nodes
+        var node = svg.append("g").selectAll(".node")
+            .data(graph.nodes)
+          .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { 
+            return "translate(" + d.x + "," + d.y + ")"; })
+            .call(d3.drag()
+              .subject(function(d) {
+                return d;
+              })
+              .on("start", function() {
+                this.parentNode.appendChild(this);
+              })
+              .on("drag", dragmove));
+
+        // add the rectangles for the nodes
+        node.append("rect")
+            .attr("height", function(d) { return d.dy; })
+            .attr("width", sankey.nodeWidth())
+            .style("fill", function(d) { 
+            return d.color = color(d.name.replace(/ .*/, "")); })
+            .style("stroke", function(d) { 
+            return d3.rgb(d.color).darker(2); })
+          .append("title")
+            .text(function(d) { 
+            return d.name + "\n" + format(d.value); });
+
+        // add in the title for the nodes
+        node.append("text")
+            .attr("x", -6)
+            .attr("y", function(d) { return d.dy / 2; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .attr("transform", null)
+            .text(function(d) { return d.name; })
+          .filter(function(d) { return d.x < width / 2; })
+            .attr("x", 6 + sankey.nodeWidth())
+            .attr("text-anchor", "start");
+
+        // the function for moving the nodes
+        function dragmove(d) {
+          d3.select(this)
+            .attr("transform", 
+                  "translate(" 
+                     + d.x + "," 
+                     + (d.y = Math.max(
+                        0, Math.min(height - d.dy, d3.event.y))
+                       ) + ")");
+          sankey.relayout();
+          link.attr("d", path);
+        }
+      });
+    
+
+    </script>
+    </div>
+    </form>
+
+{% endwith %}
+{% endwith %}
+  </body>
+</html>

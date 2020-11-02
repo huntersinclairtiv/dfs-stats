@@ -20,7 +20,8 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    url(r'^webscrape/', include('webscrape.urls')),
+    url(r'^nfl_research/', include('nfl_research.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^$', views.home, name='home'),
 ]

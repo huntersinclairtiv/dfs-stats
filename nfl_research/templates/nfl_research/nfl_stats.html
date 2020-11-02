@@ -1,0 +1,823 @@
+{% load static %}
+{% load insight_tags %}
+<!DOCTYPE html>
+<html>
+  <head>   
+    <title>Analytics Testing</title>
+    {% include 'nfl_research/partials/html_common_head.html' %}
+    <style>
+    </style>
+  </head>
+  <body class="fixed-sn light-blue-skin">
+
+    {% include 'nfl_research/partials/header_w_sidebar.html' with active_page='nfl_stats' %}
+
+    <main class="body-container nav-out">
+
+      <h1 class="left">Stat Analysis Tool</h1>
+      <p class="clearfix">This table shows awesome stats.</p>
+      <div id="main-controls" class="table-controls">
+          <select id="sites" class="site-select mdb-select">
+            <option value="" disabled selected>Choose DFS Site</option>
+            <option value="DK">DraftKings</option>
+            <option value="Fanduel">Fanduel</option>
+            <option value="FantasyDraft" disabled>FantasyDraft</option>
+          </select>
+          <select id="years" class="year-select mdb-select">
+            <option value="" disabled>NFL Year</option>
+            <option value="2017" selected>2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+            <option value="2014">2014</option>
+            <option value="2013">2013</option>
+          </select>
+          <select id="seasons" class="season-select mdb-select">
+            <option value="" disabled>NFL Season</option>
+            <option value="REG" selected>Regular</option>
+            <option value="PRE">Pre</option>
+            <option value="POST">Post</option>
+          </select>
+          <select id="weeks" class="week-select mdb-select">
+            <option value="" disabled>NFL Week</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10" selected>10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+          </select>
+          <select id="slates" class="slate-select mdb-select">
+            <option value="" disabled selected>Choose your slate</option>
+            <option value=""></option>
+          </select>
+      </div>
+      <div id="tabulator-controls" class="table-controls">
+          <i class="fa fa-filter fa-fw"></i> <input name="Player" type="text" placeholder="Filter Table By Name">
+          <button name="undo" class="btn btn-primary"><i class="fa fa-undo"></i> Undo Edit</button>
+          <button name="add-row" class="btn btn-primary"><i class="fa fa-plus"></i> Add Row</button>
+          <button name="download-csv" class="btn btn-primary"><i class="fa fa-download"></i> Download CSV</button>
+          <button name="download-json" class="btn btn-primary">Download JSON</button>
+          <button name="download-xlsx" class="btn btn-primary">Download XLSX</button>
+          <button name="loadstats" class="btn btn-primary loadWeekButton">Load this week</button>
+          <button name="loadsalary" class="btn btn-primary loadSalaryButton">Load weeks salaries</button>
+      </div>
+      {% csrf_token %}
+      <div id="tabulator-table"></div>
+
+      <div id="loader" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">
+        <div class="modal-dialog modal-m" style="z-index:9999">
+          <div class="modal-content">
+            <div class="modal-header"><h3 style="margin:0;">Loading This Weeks Stats</h3></div>
+            <div class="modal-body">
+              <div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+      </div>
+      <!-- SCRIPTS -->
+      <!-- JQuery -->
+      <!-- MDB core JavaScript with jQuery and bootstrap included-->
+      <script type="text/javascript" src="{% static 'js/mdb.compiled.min.js' %}"></script>
+      <!-- script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script -->
+      <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+
+      <!-- Latest compiled and minified JavaScript -->
+      <!-- script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script -->
+      
+      <!-- Sparkline control for tables -->
+      <script type="text/javascript" src="{% static 'js/sparkline.js' %}"></script>
+      <!-- Tabulator Table controls -->
+      <script type="text/javascript" src="{% static 'js/tabulator.min.js' %}"></script>
+      <!-- Bootstrap tooltips -->
+      <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+      <!-- Bootstrap core JavaScript -->
+      <!-- script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script -->
+      <!-- D3 graph controls -->
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+      <!-- hamburger controls -->
+      <!-- script src="{% static 'hamburger.js' %}"></script -->
+      <script src="{% static 'js/jquery.mousewheel.min.js' %}"></script>
+      <script src="{% static 'js/jQAllRangeSliders-min.js' %}"></script>
+      <script src="{% static 'js/jquery-ui-dragslider.js' %}"></script>
+
+
+      <script type="text/javascript" src="{% static 'modal.js' %}"></script>
+      <script type="text/javascript">
+        var week = 11;
+        var season = "REG";
+        var site = "DK";
+        var year = 2017;
+        var reload = 'true';
+      
+        /* TABLE FORMATTERS */
+        //generate line chart
+        var lineFormatter = function(cell, formatterParams){
+            setTimeout(function(){ //give cell enough time to be added to the DOM before calling sparkline formatter
+              cell.getElement().sparkline(cell.getValue(), {width:"100%", type:"line", disableTooltips:true});
+            }, 10);
+        };
+        
+        var percentFormatter = function(cell, formatterParams){
+            return cell.getValue() + "%"; //return the contents of the cell;
+        };
+
+        var checkForBlank = function(value, data, type, mutatorParams, cell){
+            return (value && value!="") ? value : 0; //return the contents of the cell;
+        };
+        /* TABLE FORMATTERS */
+            
+        function setColumnHeadersBasedOnJSON(thisObj) {
+          newColumns = [];
+          if (thisObj && typeof thisObj != "undefined") {
+            for (const key of Object.keys(thisObj)) {
+                //console.log(key, obj[key]);
+                var newObj = {
+                  title: key,
+                  field: key,
+                  sorter: isNaN(thisObj[key]) ? "string" : "number"
+                };
+              
+                if (!isNaN(thisObj[key])) {
+                  newObj.mutator = checkForBlank;
+                }
+              
+                if (key.toLowerCase().indexOf("pct") >= 0 || key.toLowerCase().indexOf("percent") >= 0) {
+                  newObj.formatter = percentFormatter;
+                }
+              
+                if (key.toLowerCase() == "player" || key.toLowerCase() == "name") {
+                  newObj.frozen = true;
+                  newColumns.unshift(newObj); /*front of array */
+                } else {
+                  newColumns.push(newObj);
+                }
+            }
+          }
+          $("#tabulator-table").tabulator("setColumns", newColumns);
+        }
+        
+        function loadStatsData() {
+          var slate = '';
+          load_stats_data(year, week, site, slate, season);
+        }
+        /* 
+          Loads this weeks slates if not already loaded
+        */
+        function getSlates() {            
+            var url = "/nfl_research/get_slates/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              week: week,
+              year: year,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (data.success == 'true') {
+                  //waitingDialog.hide();
+                  htmlContent = '<option value="" disabled selected>Choose your slate</option>';
+                  if (data.slates && data.slates.length > 0) {
+                    for (var i = 0, len = data.slates.length; i < len; i++) {
+                      htmlContent += '<option value="' + data.slates[i] + '">' + data.slates[i] + '</option>';
+                    }
+                  }
+                  $('#slates').html(htmlContent);
+                  $('#slates').material_select('destroy');
+                  $('#slates').material_select();
+                  $('#slates').unbind('change')
+                  $('#slates').on('change', function (obj) {
+                    // do something…
+                    //console.log(obj.currentTarget.value);
+                    //load_week(year, week, site, obj.currentTarget.value, season, reload);
+                    loadStatsData();
+                  });
+                  console.log(data);
+                } else {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+        /* END OF getSlates */
+        
+        /* 
+          Loads this weeks stats if not already loaded
+        */
+        function load_week(year, week, site, slate, season, reload) {
+            var url = "/nfl_research/load_week/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              week: week,
+              slate: slate,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              reload: reload, /* set to true to force reload of week data */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                if (data.success == 'true') {
+                  //waitingDialog.hide();
+                  setColumnHeadersBasedOnJSON(data.firstObj)
+                  $("#tabulator-table").tabulator("setData", data.file);
+                  setTimeout(function(){
+                    setColumnHeadersBasedOnJSON(data.firstObj)
+                  }, 1000);
+                  //setTimeout(setColumnHeadersBasedOnJSON(data.firstObj), 10000);
+                  console.log(data);
+                } else {
+                  if (data.errorMsg && data.errorMsg.indexOf("Error:21") >= 0) {
+                    //We have an error with getting existing player data for week - so we need to reload and try again.
+                    start_update_weekdata_for_team_request(0, 'true');
+                  } else {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                  }
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+
+        function load_stats_data(year, week, site, slate, season) {
+            var url = "/nfl_research/load_stats_data/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              week: week,
+              slate: slate,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                 $('#loader').show();
+                 $('#loader').addClass('show');
+              },
+              complete: function(){
+                 $('#loader').removeClass('show');
+                 $('#loader').hide();
+              },
+              success: function(data)
+              {
+                setColumnHeadersBasedOnJSON(data[0]);
+                $("#tabulator-table").tabulator("setData", data);
+                setTimeout(function(){
+                  setColumnHeadersBasedOnJSON(data[0]);
+                }, 1000);
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }
+        /* 
+          Loads last weeks data if not already loaded for each team
+        */
+        const NFL_TEAMS = ['ARI','ATL','BAL','BUF','CAR','CHI','CIN','CLE','DAL','DEN','DET','GB','HOU','IND','JAX','KC','LAC','LAR','MIA','MIN','NE','NO','NYG','NYJ','OAK','PHI','PIT','SEA','SF','TB','TEN','WAS'];
+
+        function start_update_weekdata_for_team_request(teamIndex, reload) {
+          update_weekdata_for_team_request(year, week, site, season, reload, teamIndex);
+        }
+        function update_weekdata_for_team_request(year, week, site, season, reload, teamIndex) {
+            var url = "/nfl_research/update_weekdata_for_team_request/"; // the script where you handle the form input.
+            //waitingDialog.show('Please wait while this weeks stats are loaded');
+            var thisData = {
+              year: year,
+              week: week,
+              site: site,
+              season: season, /* Week, Post, Pre */
+              team: NFL_TEAMS[teamIndex], /* 3 letter team initial - JAX not JAC */
+              reload: reload, /* set to true to force reload of week data */
+              csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            };
+            $.ajax({
+              context: this,
+              type: "POST",
+              url: url,
+              data: thisData, 
+              beforeSend: function() {
+                if (teamIndex == 0) {
+                  $('#loader').show();
+                  $('#loader').addClass('show');
+                }
+              },
+              complete: function(){
+                if (teamIndex >= 31) {
+                  $('#loader').removeClass('show');
+                  $('#loader').hide();
+                }
+              },
+              success: function(data)
+              {
+                if (data.success == 'true') {
+                  console.log(data);
+                  teamIndex += 1;
+                  if (teamIndex < 32) {
+                    start_update_weekdata_for_team_request(teamIndex, reload);
+                  } else {
+                    //Reload week data after we update all team data for week
+                    if ($("#slates").val() && $("#slates").val() != '') {
+                      load_week(year, week, site, $("#slates").val(), season, reload);
+                    }
+                  }
+                } else {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                  $('#loader').removeClass('show');
+                  $('#loader').hide();
+                }
+              },
+              error: function(data)
+              {
+                //waitingDialog.hide();
+                alert("There was an error loading data: " + data.statusText); // show error
+                $('#loader').removeClass('show');
+                $('#loader').hide();
+              },
+            });
+
+            // e.preventDefault(); // avoid to execute the actual submit of the form.
+        }  
+              
+        $(document).ready(function() {
+
+          $('#sites').material_select('destroy');
+          $('#years').material_select('destroy');
+          $('#seasons').material_select('destroy');
+          $('#weeks').material_select('destroy');
+          
+          $("#sites").val(site);
+          $("#years").val(year);
+          $("#seasons").val(season);
+          $("#weeks").val(week);
+
+          $('#sites').material_select();
+          $('#years').material_select();
+          $('#seasons').material_select();
+          $('#weeks').material_select();
+
+          $('#sites').on('change', function (obj) {
+            site = obj.currentTarget.value;
+            loadStatsData();
+            //getSlates();
+          });
+          $('#years').on('change', function (obj) {
+            year = obj.currentTarget.value;
+            loadStatsData();
+            //getSlates();
+          });
+          $('#seasons').on('change', function (obj) {
+            season = obj.currentTarget.value;
+            loadStatsData();
+            //getSlates();
+          });
+          $('#weeks').on('change', function (obj) {
+            week = obj.currentTarget.value;
+            loadStatsData();
+            //getSlates();
+          });
+
+          /* 
+            Loads this weeks stats if not already loaded
+          */
+          $(".loadWeekButton").click(function(e) {
+            //load_week(year, week, site, '', season, reload);
+            start_update_weekdata_for_team_request(0, 'true');
+          });
+        
+
+          /* 
+            Loads this weeks salaries if not already loaded
+          */
+          $(".loadSalaryButton").click(function(e) {
+              var url = "/nfl_research/load_salary/"; // the script where you handle the form input.
+              //waitingDialog.show('Please wait while this weeks stats are loaded');
+              var thisData = {
+                week: week,
+                year: year,
+                site: site,
+                season: season, /* Week, Post, Pre */
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+              };
+              $.ajax({
+                context: this,
+                type: "POST",
+                url: url,
+                data: thisData, 
+                beforeSend: function() {
+                   $('#loader').show();
+                   $('#loader').addClass('show');
+                },
+                complete: function(){
+                   $('#loader').removeClass('show');
+                   $('#loader').hide();
+                },
+                success: function(data)
+                {
+                  if (data.success == 'true') {
+                    //waitingDialog.hide();
+                    getSlates();
+                    console.log(data);
+                  } else {
+                    //waitingDialog.hide();
+                    alert("There was an error loading data: " + data.errorMsg); // show response from the python script.
+                  }
+                },
+                error: function(data)
+                {
+                  //waitingDialog.hide();
+                  alert("There was an error loading data: " + data.statusText); // show error
+                },
+              });
+
+              // e.preventDefault(); // avoid to execute the actual submit of the form.
+          });
+        
+          //getSlates();
+          
+          // SideNav Initialization
+          $(".button-collapse").sideNav();
+          
+          //Select box init
+          //$('.mdb-select').material_select();
+          
+          $(".button-collapse").click(function(e) {
+            $(".body-container").removeClass( "nav-out" ).addClass( "nav-in" );
+            $(".top-nav").removeClass( "nav-out" ).addClass( "nav-in" );
+            $("#sidenav-overlay").click(function(e) {
+              $(".body-container").removeClass( "nav-in" ).addClass( "nav-out" );
+              $(".top-nav").removeClass( "nav-in" ).addClass( "nav-out" );
+              $(".button-collapse").show();
+            });
+            $(".button-collapse").hide();
+          });
+                  
+          $(".button-collapse").trigger( "click" );
+
+          var initialValue = 50;
+          var initialValues = [30, 70];
+          var sliderTooltip = function(event, ui) {
+            if (event && event.target) {
+              var initialValues = [$(event.target).attr('slider-min')*1, $(event.target).attr('slider-max')*1];
+              var curValues = ui.values || initialValues;
+              var tooltip1 = '<div class="tooltip"><div class="tooltip-inner">' + curValues[0] + '</div><div class="tooltip-arrow"></div></div>';
+              var tooltip2 = '<div class="tooltip"><div class="tooltip-inner">' + curValues[1] + '</div><div class="tooltip-arrow"></div></div>';
+
+              $(event.target.children[1]).html(tooltip1);
+              $(event.target.children[2]).html(tooltip2);
+            }
+          }
+          var updateTable = function(event, ui){
+              if (ui.values && ui.values.length > 0) {
+                var fieldName = $(event.target).data('slider-field') || "";
+                var curValues = ui.values;
+                if (fieldName != "") {
+                  var setValues = [];
+                  setValues.push({field:fieldName, type:">=", value:curValues[0]});
+                  setValues.push({field:fieldName, type:"<=", value:curValues[1]});
+                  $("#tabulator-table").tabulator("setFilter", setValues);
+
+                  $(".filter-sliders").each(function(index, val) {
+                    if (index < 2) {
+                    var theseVals = $(this).dragslider("option", "values");
+                    var thisFieldName = $(this).data('slider-field') || "";
+                    if (theseVals && theseVals.length > 1 && thisFieldName != "") {
+                      if (thisFieldName != fieldName) {
+                        $("#tabulator-table").tabulator("addFilter", thisFieldName, ">=", theseVals[0]);
+                        $("#tabulator-table").tabulator("addFilter", thisFieldName, "<=", theseVals[1]);
+                        //setValues.push({field:thisFieldName, type:">=", value:theseVals[0]});
+                        //setValues.push({field:thisFieldName, type:"<=", value:theseVals[1]});
+                      }
+                    }
+                    }
+                  });
+                }
+              }
+          }
+
+
+          $(".filter-sliders").each(function(index, val) {
+            $(this).dragslider({
+              animate: true,   // Works with animation.
+              range: true,     // Must have a range to drag.
+              rangeDrag: true, // Enable range dragging.
+              values: [$(this).attr('slider-min')*1.0, $(this).attr('slider-max')*1.0],
+              max: $(this).attr('slider-max')*1.0,
+              min: $(this).attr('slider-min')*1.0,
+              step: $(this).attr('slider-step')*1.0,
+              start: function( event, ui ) {
+                sliderTooltip(event, ui);
+                //console.log(ui);
+                //$(ui.handle).find('.ui-slider-tooltip').show();
+              },
+              stop: function( event, ui ) {
+                sliderTooltip(event, ui);
+                //$(ui.handle).find('.ui-slider-tooltip').hide();
+              },
+              slide: function(event, ui) {
+                sliderTooltip(event, ui);
+                //$(ui.handle).find('.ui-slider-tooltip').text(ui.value);
+              },
+              create: function( event, ui ) {
+                sliderTooltip(event, ui);
+                /*
+                var tooltip = $('<div class="ui-slider-tooltip" />').css({
+                    position: 'absolute',
+                    top: -25,
+                    left: -10
+                });
+                $(event.target).find('.ui-slider-handle').append(tooltip);
+                */
+              },
+              change: function(event, ui) {
+                updateTable(event, ui);
+              }
+            });
+          });
+          /*
+          $("#my-slider").rangeSlider({
+            bounds: {min: 0, max: 100},
+            wheelMode: "zoom",
+            min: 10,
+            max: 80,
+          });
+          */
+        
+          var tabledata = [
+          {id:1, name:"Oli Bob", progress:12, gender:"male", rating:1, col:"red", dob:"19/02/1984", car:1, lucky_no:5, activity:[1, 20, 5, 3, 10, 13, 17, 15, 9, 11, 10, 12, 14, 16, 13, 9, 7, 11, 10, 13]},
+          {id:2, name:"Mary May", progress:1, gender:"female", rating:2, col:"blue", dob:"14/05/1982", car:true, lucky_no:10, activity:[10, 12, 14, 16, 13, 9, 7, 11, 10, 13, 1, 2, 5, 4, 1, 16, 4, 2, 1, 3]},
+          {id:3, name:"Christine Lobowski", progress:42, gender:"female", rating:0, col:"green", dob:"22/05/1982", car:"true", lucky_no:12, activity:[1, 2, 5, 4, 1, 16, 4, 2, 1, 3, 3, 7, 9, 1, 4, 8, 2, 6, 4, 2]},
+          {id:4, name:"Brendon Philips", progress:100, gender:"male", rating:1, col:"orange", dob:"01/08/1980", lucky_no:18, activity:[3, 7, 9, 1, 4, 8, 2, 6, 4, 2, 1, 3, 1, 3, 3, 1, 1, 3, 1, 3]},
+          {id:5, name:"Margret Marmajuke", progress:16, gender:"female", rating:5, col:"yellow", dob:"31/01/1999", lucky_no:33, activity:[1, 3, 1, 3, 3, 1, 1, 3, 1, 3, 20, 17, 15, 11, 16, 9, 12, 14, 20, 12]},
+          {id:6, name:"Frank Harbours", progress:38, gender:"male", rating:4, col:"red", dob:"12/05/1966", car:1, lucky_no:2, activity:[20, 17, 15, 11, 16, 9, 12, 14, 20, 12, 11, 7, 6, 12, 14, 13, 11, 10, 9, 6]},
+          {id:7, name:"Jamie Newhart", progress:23, gender:"male", rating:3, col:"green", dob:"14/05/1985", car:true, lucky_no:63, activity:[11, 7, 6, 12, 14, 13, 11, 10, 9, 6, 4, 17, 11, 12, 0, 5, 12, 14, 18, 11]},
+          {id:8, name:"Gemma Jane", progress:60, gender:"female", rating:0, col:"red", dob:"22/05/1982", car:"true", lucky_no:72, activity:[4, 17, 11, 12, 0, 5, 12, 14, 18, 11, 11, 15, 19, 20, 17, 16, 16, 5, 3, 2]},
+          {id:9, name:"Emily Sykes", progress:42, gender:"female", rating:1, col:"maroon", dob:"11/11/1970", lucky_no:44, activity:[11, 15, 19, 20, 17, 16, 16, 5, 3, 2, 1, 2, 3, 4, 5, 4, 2, 5, 9, 8]},
+          {id:10, name:"James Newman", progress:73, gender:"male", rating:5, col:"red", dob:"22/03/1998", lucky_no:9, activity:[1, 20, 5, 3, 10, 13, 17, 15, 9, 11, 1, 2, 3, 4, 5, 4, 2, 5, 9, 8]},
+          {id:11, name:"Martin Barryman", progress:20, gender:"male", rating:5, col:"violet", dob:"04/04/2001", activity:[1, 2, 3, 4, 5, 4, 11, 7, 6, 12, 14, 13, 11, 10, 9, 6, 2, 5, 9, 8]},
+          {id:12, name:"Jenny Green", progress:56, gender:"female", rating:4, col:"indigo", dob:"12/11/1998", car:true, activity:[11, 15, 19, 20, 17, 15, 11, 16, 9, 12, 14, 20, 12, 20, 17, 16, 16, 5, 3, 2]},
+          {id:13, name:"Alan Francis", progress:90, gender:"male", rating:3, col:"blue", dob:"07/08/1972", car:true, activity:[4, 17, 11, 7, 6, 12, 14, 13, 11, 10, 9, 6, 11, 12, 0, 5, 12, 14, 18, 11]},
+          {id:14, name:"John Phillips", progress:80, gender:"male", rating:1, col:"green", dob:"24/09/1950", car:true, activity:[11, 7, 6, 12, 14, 1, 20, 5, 3, 10, 13, 17, 15, 9, 1, 13, 11, 10, 9, 6]},
+          {id:15, name:"Ed White", progress:70, gender:"male", rating:0, col:"yellow", dob:"19/06/1976", activity:[20, 17, 15, 11, 16, 9, 4, 17, 11, 12, 0, 5, 12, 14, 18, 11, 12, 14, 20, 12]},
+          {id:16, name:"Paul Branderson", progress:60, gender:"male", rating:5, col:"orange", dob:"01/01/1982", activity:[1, 3, 1, 3, 3, 1, 11, 15, 19, 20, 17, 16, 16, 5, 3, 2, 1, 3, 1, 3]},
+          {id:18, name:"Emma Netwon", progress:40, gender:"female", rating:4, col:"brown", dob:"07/10/1963", car:true, activity:[3, 7, 9, 1, 4, 8, 3, 7, 9, 1, 4, 8, 2, 6, 4, 2, 2, 6, 4, 2]},
+          {id:19, name:"Hannah Farnsworth", progress:30, gender:"female", rating:1, col:"pink", dob:"11/02/1991", activity:[1, 2, 5, 4, 1, 16, 10, 12, 14, 16, 13, 9, 7, 11, 10, 13, 4, 2, 1, 3]},
+          {id:20, name:"Victoria Bath", progress:20, gender:"female", rating:2, col:"purple", dob:"22/03/1986", activity:[10, 12, 14, 16, 13, 9, 7, 1, 2, 3, 4, 5, 4, 2, 5, 9, 8, 11, 10, 13]},
+          ];
+
+          var genderEditor = function(cell, onRendered, success, cancel){
+            var editor = $("<select><option value=''></option><option value='male'>male</option><option value='female'>female</option></select>");
+            editor.css({
+              "padding":"5px",
+              "width":"100%",
+              "box-sizing":"border-box",
+            });
+
+            //Set value of editor to the current value of the cell
+            editor.val(cell.getValue());
+
+            //set focus on the select box when the editor is selected (timeout allows for editor to be added to DOM)
+            onRendered(function(){
+              editor.focus();
+              editor.css("height","100%");
+            });
+
+            //when the value has been set, trigger the cell to update
+            editor.on("change blur", function(e){
+              success(editor.val());
+            });
+
+            //return the editor element
+            return editor;
+          };
+
+
+          /*
+          var getMaxVal = function(values, data, calcParams){
+              //values - array of column values
+              //data - all table data
+              //calcParams - params passed from the column defintion object
+              console.log(calcParams);
+              var maxVal = Math.max.apply(Math,values);
+              return maxVal;
+          }
+
+          var getMinVal = function(values, data, calcParams){
+              //values - array of column values
+              //data - all table data
+              //calcParams - params passed from the column defintion object
+              console.log(calcParams);
+              var minVal = Math.min.apply(Math,values);
+              return minVal;
+          }
+          */
+          $("#tabulator-table").tabulator({
+            layout:"fitDataFill",
+            persistentLayout: false,
+            persistentLayoutID:"dfsStatsTable",
+            tooltips:true,
+            selectable:true,
+            //addRowPos:"top",
+            history:true,
+            //pagination:"local",
+            //paginationSize:7,
+            movableColumns:true,
+            height:"500px",
+            placeholder:"No Data Set",
+            initialSort:[
+              {column:"FantasyPts", dir:"desc"},
+            ],
+            columns:[
+              {title:"Player", field:"Player", sorter:"string", frozen:true},
+              {title:"FantasyPts", field:"FantasyPts", sorter:"number", mutator:checkForBlank},
+              //{title:"Year", field:"Year", sorter:"number", mutator:checkForBlank, topCalc:getMaxVal, bottomCalc:getMinVal, topCalcParams:{field:"Year"}, bottomCalcParams:{field:"Year"}},
+              {title:"Year", field:"Year", sorter:"number", mutator:checkForBlank},
+              {title:"Season", field:"Season", sorter:"string"},
+              //{title:"Pos", field:"Pos", sorter:"string"},
+              {title:"Week", field:"Week", sorter:"number", mutator:checkForBlank},
+              {title:"Team", field:"Team", sorter:"string"},
+              {title:"Opp", field:"Opp", sorter:"string"},
+              {title:"Targets", field:"Targets", sorter:"number", mutator:checkForBlank},
+              {title:"Rec", field:"Rec", sorter:"number", mutator:checkForBlank},
+              {title:"RecPct", field:"RecPct", sorter:"number", mutator:checkForBlank, formatter:percentFormatter},
+              {title:"RecYds", field:"RecYds", sorter:"number", mutator:checkForBlank},
+              {title:"RecTD", field:"RecTD", sorter:"number", mutator:checkForBlank},
+              {title:"RecLong", field:"RecLong", sorter:"number", mutator:checkForBlank},
+              {title:"YdsPTarget", field:"YdsPTarget", sorter:"number", mutator:checkForBlank},
+              {title:"YdsPRec", field:"YdsPRec", sorter:"number", mutator:checkForBlank},
+              {title:"RushAtt", field:"RushAtt", sorter:"number", mutator:checkForBlank},
+              {title:"RushYds", field:"RushYds", sorter:"number", mutator:checkForBlank},
+              {title:"RushTD", field:"RushTD", sorter:"number", mutator:checkForBlank},
+              {title:"Fum", field:"Fum", sorter:"number", mutator:checkForBlank},
+              {title:"Lost", field:"Lost", sorter:"number", mutator:checkForBlank},
+            ],
+            dataSorted:function(thisData){
+              /*
+              $('.filter-sliders').each(function(index, value){
+                var fieldName = $(this).data('slider-field');
+                console.log(fieldName);
+                var minVal = $('.tabulator-calcs-bottom div[tabulator-field="' + fieldName + '"]').attr('Title') * 1;
+                console.log(minVal);
+                var maxVal = $('.tabulator-calcs-top div[tabulator-field="' + fieldName + '"]').attr('Title') * 1;
+                if (!isNaN(minVal) && !isNaN(maxVal)) {
+                  $(this).dragslider('option',{min: minVal, max: maxVal});
+                }
+              });
+              */
+              //$('.tabulator-calcs-bottom div[tabulator-field="Year"]').attr('Title')
+            },
+            dataFiltered:function(filters, rows){
+              //filters - array of filters currently applied
+              //rows - array of row components that pass the filters
+            },
+            dataLoaded:function(data){
+              //data - all data loaded into the table
+
+            },
+
+          });
+            /*
+            columns:[
+              {title:"Name", field:"name", editor:"input"},
+              {title:"Task Progress", field:"progress", align:"left", formatter:"progress", editor:true},
+              {title:"Activity", field:"activity", width:160, formatter:lineFormatter, headerSort:false},
+              {title:"Gender", field:"gender", width:90, editor:genderEditor},
+              {title:"Rating", field:"rating", formatter:"star", align:"center", width:100, editor:true},
+              {title:"Color", field:"col", width:130, editor:"input"},
+              {title:"Date Of Birth", field:"dob", width:130, sorter:"date", align:"center"},
+              {title:"Car", field:"car", width:80,  align:"center", formatter:"tickCross", sorter:"boolean", editor:true},
+            ],
+            */
+          //$("#tabulator-table").tabulator("setData", tabledata);
+          $("#tabulator-table").tabulator("setData", "/static/data/fantasydata_wr2.json");
+          
+          //trigger AJAX load on "Load Data via AJAX" button click
+          /*
+          $("#ajax-trigger").click(function(){
+              $("#tabulator-table").tabulator("setData", "/static/data/playerdata_wr_reg.json");
+          });
+          */
+          
+          $(window).resize(function(){
+            $("#tabulator-table").tabulator("redraw");
+          });
+
+
+          $("#tabulator-controls input[name=Player]").on("keyup", function(){
+            $("#tabulator-table").tabulator("setFilter", "Player", "like", $(this).val())
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=hide-col]").on("click", function(){
+            $(this).toggleClass("col-hide");
+
+            if($(this).hasClass("col-hide")){
+              $("#tabulator-table").tabulator("showColumn","rating");
+            }else{
+              $("#tabulator-table").tabulator("hideColumn","rating");
+            }
+            return false;
+          });
+
+          $("#tabulator-controls button[name=undo]").on("click", function(){
+            $("#tabulator-table").tabulator("undo")
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=add-row]").on("click", function(){
+            $("#tabulator-table").tabulator("addRow", {});
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=download-csv]").on("click", function(){
+            $("#tabulator-table").tabulator("download", "csv", "stats.csv");
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=download-json]").on("click", function(){
+            $("#tabulator-table").tabulator("download", "json", "stats.json");
+            return false;
+          });
+
+          $("#tabulator-controls  button[name=download-xlsx]").on("click", function(){
+            $("#tabulator-table").tabulator("download", "xlsx", "stats.xlsx");
+            return false;
+          });
+
+
+        });
+      </script>
+    </main>
+
+  </body>
+</html>
