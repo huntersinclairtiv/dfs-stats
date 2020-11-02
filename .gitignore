@@ -1,10 +1,16 @@
 venv
+venv/*
 env
+env/*
 *.pyc
 .env
 db.sqlite3
+lib/*
 lib
 *.lock
 activate
+activate/*
 include
+include/*
 bin
+bin/*
