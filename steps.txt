@@ -1,4 +1,12 @@
-goto root /Developer/football/
-source bin/activate
+goto root /Developer/nfl/
+source env/bin/activate
 check version python -V
 python manage.py runserver
+
+
+if you need to make new venv :
+python -m venv <newdirectoryname>
+
+Other commands
+python manage.py collectstatic --noinput
+pip install -r requirements.txt
