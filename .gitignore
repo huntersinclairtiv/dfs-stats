@@ -7,7 +7,6 @@ env/*
 db.sqlite3
 lib/*
 lib
-*.lock
 activate
 activate/*
 include
