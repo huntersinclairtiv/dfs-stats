@@ -55,6 +55,7 @@
                         <div class="game-controls-header">
                             <span class="team-initials">Away Team: <b></b></span>
                             <span class="team-score">Score: <b></b></span>
+                            <input class="team-name" type="hidden" />
                         </div>
                         <div class="game-control-row advanced-headings">
                             <span class="orig-heading">Seas. Avg</span>
@@ -83,6 +84,8 @@
                             <input class="turnovers game-input" />
                             <input class="turnovers-orig game-input-xtra" readonly/>
                             <input class="turnovers-allowed game-input-xtra" readonly/>
+                            <input class="interceptions-made" type="hidden" />
+                            <input class="fumbles-recovered" type="hidden" />
                         </div>
                         <div class="advanced-controls-wrapper">
                             <div class="game-control-row">
@@ -190,6 +193,7 @@
                         <div class="game-controls-header">
                             <span class="team-initials">Home Team: <b></b></span>
                             <span class="team-score">Score: <b></b></span>
+                            <input class="team-name" type="hidden" />
                         </div>
                         <div class="game-control-row advanced-headings">
                             <span class="orig-heading">Seas. Avg</span>
@@ -218,6 +222,8 @@
                             <input class="turnovers game-input" />
                             <input class="turnovers-orig game-input-xtra" readonly/>
                             <input class="turnovers-allowed game-input-xtra" readonly/>
+                            <input class="interceptions-made" type="hidden" />
+                            <input class="fumbles-recovered" type="hidden" />
                         </div>
                         <div class="advanced-controls-wrapper">
                             <div class="game-control-row">
@@ -846,14 +852,18 @@
         function getProjection(data) {
             //data - the data for the row
         
-            var paValue = calculatePA(data);
+            var paValue = data.iPA; //calculatePA(data);
+            
+            if (data.FantasyPosition == 'DST') {
+                console.log(data);
+            }
 
             var projValue = 0;
             if (site == 'DK') {
                 projValue = (
                     (data.PassingYards / 25.0) + (data.PassingYards >= 300 ? 3 : 0) + (data.PassingTouchdowns * 4.0) + 
                     (data.RushingYards / 10.0) + (data.RushingYards >= 100 ? 3 : 0) + (data.RushingTouchdowns * 6.0) + 
-                    (data.ReceivingYards / 10) + (data.ReceivingYards >= 100 ? 3 : 0) + (data.ReceivingTouchdowns * 6.0) + (data.Receptions * 1.0) +
+                    (data.ReceivingYards / 10.0) + (data.ReceivingYards >= 100 ? 3 : 0) + (data.ReceivingTouchdowns * 6.0) + (data.Receptions * 1.0) +
                     (data.FantasyPosition == 'DST' ? data.Sacks * 1.0 : 0) +
                     (data.FantasyPosition == 'DST' ? data.Interceptions * 2.0 : (-1 * data.PassingInterceptions)) +
                     (data.FantasyPosition == 'DST' ? data.FumblesRecovered * 2.0 : (-1 * data.FumblesLost)) +
@@ -862,13 +872,22 @@
                 projValue = (
                     (data.PassingYards / 25.0) + (data.PassingTouchdowns * 4.0) + 
                     (data.RushingYards / 10.0) + (data.RushingTouchdowns * 6.0) + 
-                    (data.ReceivingYards / 10) + (data.ReceivingTouchdowns * 6.0) + (data.Receptions * 0.5) +
+                    (data.ReceivingYards / 10.0) + (data.ReceivingTouchdowns * 6.0) + (data.Receptions * 0.5) +
                     (data.FantasyPosition == 'DST' ? data.Sacks * 1.0 : 0) +
                     (data.FantasyPosition == 'DST' ? data.Interceptions * 2.0 : (-1 * data.PassingInterceptions)) +
                     (data.FantasyPosition == 'DST' ? data.FumblesRecovered * 2.0 : (-2 * data.FumblesLost)) +
                     (paValue));
             }
-        
+            if (data.FantasyPosition == 'DST') {
+                console.log(data);
+                console.log(data.ReceivingYards);
+                console.log((data.ReceivingTouchdowns * 6.0));
+                console.log((data.Receptions * 0.5));
+                console.log((data.FantasyPosition == 'DST' ? data.Sacks * 1.0 : 0));
+                console.log((data.FantasyPosition == 'DST' ? data.Interceptions * 2.0 : (-1 * data.PassingInterceptions)));
+                console.log((data.FantasyPosition == 'DST' ? data.FumblesRecovered * 2.0 : (-2 * data.FumblesLost)));
+                console.log(paValue);
+            }
             return roundNum(projValue);
         }
 
@@ -985,7 +1004,7 @@
                   year: year,
                   site: site,
                   season: season, /* REG, POST, PRE */
-                  reload: reload,
+                  reload: false, //Force to be false since reloading will overwrite rather than append in this case.
                   csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
                 };
                 $.ajax({
@@ -1299,6 +1318,10 @@
             
             var avgVal = ((value && value!="") ? value : 0) / numGames;
             avgVal = Math.round((avgVal + Number.EPSILON) * 10) / 10
+            
+            if (isNaN(avgVal)) {
+                return 0;
+            }
 
             return avgVal;
         }
@@ -1327,6 +1350,7 @@
             return rowData;
         }
         function updateDataWithTree(tableData) {
+            addDSTtoTable(tableData);
             for (var i=0; i < tableData.length; i++) {
                 var rawRow = updateRowWithAverages(tableData[i]);
                 var thisRow = JSON.parse(JSON.stringify(rawRow)); //copy obj since we can't assign same or we loop
@@ -1338,6 +1362,28 @@
         
             return tableData;
         }
+        function addDSTtoTable(tableData) {
+            var homeTeamFound = false;
+            var awayTeamFound = false;
+            for (var i=0; i < tableData.length; i++) {
+                if (tableData[i].FantasyPosition == 'DST') {
+                    if (tableData[i].Team == homeTeam) {
+                        homeTeamFound = true;
+                    }
+                    if (tableData[i].Team == awayTeam) {
+                        awayTeamFound = true;
+                    }
+                }
+            }
+            if (homeTeamFound == false) {
+                var homeDST = {Team: homeTeam, FantasyPosition: 'DST', Name: $('.team-controls-' + homeTeam + ' .team-name').val()}
+                tableData.push(homeDST);
+            }
+            if (awayTeamFound == false) {
+                var awayDST = {Team: awayTeam, FantasyPosition: 'DST', Name: $('.team-controls-' + awayTeam + ' .team-name').val()}
+                tableData.push(awayDST);
+            }
+        }
         function refreshProjectionsInData(tableData) {
             for (var i=0; i < tableData.length; i++) {
                 updateRowWithProjections(tableData[i]); //Must call this AFTER making a copy above
@@ -1346,6 +1392,9 @@
             return tableData;
         }
         function updateRowWithProjections(rowData) {
+            if (rowData.Team != homeTeam && rowData.Team != awayTeam) {
+                return;
+            }
             /*
             // Note: we only need these projections from sportsdata to calculate a touch share % - but we will
             // apply that percentage to the Team Projections to come up with individual projections.
@@ -1357,15 +1406,21 @@
             rowData.ReceivingTouchdowns = getProjectionForKey(rowData, 'ReceivingTouchdowns');
             */
             
+            //Probably should load these from the tableData if editing in future.
             rowData.PassingAttemptsShare = getProjectionShareForKey(rowData, 'PassingAttempts');
             rowData.PassingTouchdownsShare = getProjectionShareForKey(rowData, 'PassingTouchdowns');
             rowData.RushingAttemptsShare = getProjectionShareForKey(rowData, 'RushingAttempts');
             rowData.RushingTouchdownsShare = getProjectionShareForKey(rowData, 'RushingTouchdowns');
             rowData.ReceivingTargetsShare = getProjectionShareForKey(rowData, 'ReceivingTargets');
             rowData.ReceivingTouchdownShares = getProjectionShareForKey(rowData, 'ReceivingTouchdowns');
+            rowData.fgShare = getProjectionShareForKey(rowData, 'FieldGoalsMade');
             
             
             var teamControls = $('.team-controls-'+rowData.Team);
+            var oppControls = $('.team-controls-'+homeTeam);
+            if (rowData.Team == homeTeam) { //if current player team is home team the opp is away
+                oppControls = $('.team-controls-'+awayTeam);
+            }
             rowData.PassingAttempts = roundNum(parseFloat($('.pass-att', teamControls).val()) * (rowData.PassingAttemptsShare / 100.0));
             rowData.CompletionPercentage = roundNum($('.comp-perc', teamControls).val());
             rowData.PassingCompletions = roundNum(rowData.PassingAttempts * (rowData.CompletionPercentage / 100.0));
@@ -1380,11 +1435,66 @@
 
             rowData.ReceivingTargets = roundNum(parseFloat($('.pass-att', teamControls).val()) * (rowData.ReceivingTargetsShare / 100.0));
             rowData.Receptions = roundNum(parseFloat($('.pass-comp', teamControls).val()) * (rowData.ReceivingTargetsShare / 100.0));
-            rowData.ReceivingYardsPerReception = (rowData.ReceivingYardsPerReception <= 2.0 && rowData.ReceivingTargetsShare >= 1) ? (roundNum($('.yds-per-rec', teamControls).val())) : rowData.ReceivingYardsPerReception;
+            rowData.ReceivingYardsPerReception = (rowData.ReceivingYardsPerReception <= 2.0 && rowData.ReceivingTargetsShare >= 1) ? (roundNum($('.yds-per-rec', teamControls).val())) : roundNum(rowData.ReceivingYardsPerReception);
             rowData.ReceivingYards = roundNum(rowData.Receptions * rowData.ReceivingYardsPerReception);
             rowData.ReceivingTouchdowns = roundNum(parseFloat($('.pass-tds', teamControls).val()) * (rowData.ReceivingTouchdownShares / 100.0));
 
+            if (isNaN(rowData.ReceivingYards)) {
+                rowData.ReceivingYards = 0; //Catch for division by zero error since some may have 0 stat.
+            }
+
+            rowData.fgPts =  (rowData.fgShare >= 1  ? getFGAdjusted(rowData, roundNum($('.fg-atts', teamControls).val())) : 0);
+            rowData.paPts =  (rowData.fgShare >= 1  ? roundNum((parseFloat($('.pass-tds', teamControls).val()) + parseFloat($('.rush-tds', teamControls).val())) * (rowData.fgShare / 100.0)) : 0);
+            rowData.defPrevPts = getDefAdjusted(rowData, roundNum($('.team-score b', oppControls).html()));
+            rowData.iPA = rowData.fgPts + rowData.paPts + rowData.defPrevPts;
+            
+            if (rowData.FantasyPosition == 'DST') {
+                rowData.FumblesRecovered = roundNum(parseFloat($('.fumbles-recovered', oppControls).val()));
+                rowData.Interceptions = roundNum(parseFloat($('.interceptions-made', oppControls).val()));
+                rowData.Sacks = roundNum(parseFloat($('.def-sacks', teamControls).val()));
+            }
         }        
+        function getDefAdjusted(rowData, oppScore) {
+            if (rowData.FantasyPosition == 'DST') {
+                // TODO once we have DST added
+                if (oppScore < 1) {
+                    return 10;
+                } else if (oppScore < 7) {
+                    return 7;
+                } else if (oppScore < 14) {
+                    return 4;
+                } else if (oppScore < 21) {
+                    return 1;
+                } else if (oppScore < 28) {
+                    return 0;
+                } else if (oppScore < 35) {
+                    return -1;
+                } else { //35+
+                    return -4;
+                }
+            } else {
+                return 0;
+            }
+        }
+        function getFGAdjusted(rowData, fgAttempts) {
+            var fieldGoalsMade = parseFloat(rowData.FieldGoalsMade);
+            if (parseFloat(rowData.FieldGoalsMade) < 1) {
+                return roundNum(fgAttempts * 3.0);
+            } else {        
+                var made0to39 = (parseFloat(rowData.FieldGoalsMade0to19) + 
+                                parseFloat(rowData.FieldGoalsMade20to29) +
+                                parseFloat(rowData.FieldGoalsMade30to39)) / fieldGoalsMade;
+                var made40to49 = parseFloat(rowData.FieldGoalsMade40to49) / fieldGoalsMade;
+                var made50Plus = parseFloat(rowData.FieldGoalsMade50Plus) / fieldGoalsMade;
+                //console.log('attempts: ' + fgAttempts);
+                //console.log('made0to39: ' + roundNum(made0to39 * fgAttempts * 3.0));
+                //console.log('made40to49: ' + roundNum(made40to49 * fgAttempts * 4.0));
+                //console.log('made50Plus: ' + roundNum(made50Plus * fgAttempts * 5.0));
+                //console.log('share: ' + roundNum(rowData.fgShare / 100.0));
+                var totalPts = roundNum(((made0to39 * fgAttempts * 3.0) + (made40to49 * fgAttempts * 4.0) + (made50Plus * fgAttempts * 5.0)) * (rowData.fgShare / 100.0));
+                return totalPts;
+            }
+        }
         function getProjectionForKey(data, keyVal) {
             var lookupKey = data.PlayerID;
             if (lookupKey in playerProjData) {
@@ -1406,7 +1516,7 @@
             var lookupKey = data.PlayerID;
             if (lookupKey in playerProjData) {
                 thisProjPlayer = playerProjData[lookupKey];
-                if (thisProjPlayer[keyVal] == '') {
+                if (thisProjPlayer[keyVal] == '' || typeof projTotalsObj[thisProjPlayer.Team] == 'undefined') {
                     return 0;
                 }
                 var playerVal = parseFloat(thisProjPlayer[keyVal]);
@@ -1688,7 +1798,8 @@
                     'ReceivingTargets': 0,
                     'ReceivingTouchdowns': 0,
                     'RushingTouchdowns': 0,
-                    'PassingTouchdowns': 0
+                    'PassingTouchdowns': 0,
+                    'FieldGoalsMade': 0
                 };
             } else {
                 awayProjData = projData;
@@ -1698,7 +1809,8 @@
                     'ReceivingTargets': 0,
                     'ReceivingTouchdowns': 0,
                     'RushingTouchdowns': 0,
-                    'PassingTouchdowns': 0
+                    'PassingTouchdowns': 0,
+                    'FieldGoalsMade': 0
                 };    
             }
         
@@ -1711,6 +1823,7 @@
                 projTotalsObj[playerProj.Team].ReceivingTouchdowns += playerProj.ReceivingTouchdowns;
                 projTotalsObj[playerProj.Team].RushingTouchdowns += playerProj.RushingTouchdowns;
                 projTotalsObj[playerProj.Team].PassingTouchdowns += playerProj.PassingTouchdowns;
+                projTotalsObj[playerProj.Team].FieldGoalsMade += playerProj.FieldGoalsMade;
             }
 
             if (homeOrAway == 'home') {
@@ -2036,6 +2149,7 @@
             */
             
             
+            var TeamName = teamStats.TeamName;
             // OFFENSIVE STATS
             var GamesPlayed = parseInt(teamStats.Games);
             var RushingTouchdowns = seasAvg(GamesPlayed, teamStats.RushingTouchdowns);
@@ -2100,6 +2214,8 @@
             // $(awayOrHomeSelector + ' .team-score b').html(calculatedScore);
             // $(awayOrHomeSelector + ' .score').val(calculatedScore);
             
+            $(awayOrHomeSelector + ' .team-name').val(TeamName);
+            
             $(awayOrHomeSelector + ' .score-orig').val(Score);
             $(oppSelector + ' .score-allowed').val(OpponentScore);
             
@@ -2115,6 +2231,7 @@
             fillTeamRow(awayOrHome, '.rush-tds', RushingTouchdowns, OpponentRushingTouchdowns);
             fillTeamRow(awayOrHome, '.fg-atts', FieldGoalAttempts, OpponentFieldGoalAttempts);
             fillTeamRow(awayOrHome, '.turnovers', Giveaways, Takeaways);
+            fillTOs(awayOrHome, InterceptionReturns, FumblesRecovered);
 
             fillTeamRow(awayOrHome, '.off-snaps', OffensivePlays, OpponentOffensivePlays);
 
@@ -2162,6 +2279,17 @@
             updateTeamScore('home');
             updateTeamScore('away');
         }
+
+        function fillTOs(awayOrHome, interceptions, fumbles) {
+            var oppSelector = "#game-controls-away";
+            if (awayOrHome == 'away') {
+                oppSelector = "#game-controls-home";
+            }
+
+            $(oppSelector + ' .interceptions-made').val(interceptions);
+            $(oppSelector + ' .fumbles-recovered').val(fumbles);
+        }
+
 
         //Call this when the team game settings change and we want to recalculate all the projections
         //Warning this will over-write any manually set player projections
@@ -2704,7 +2832,8 @@
                         {title:"Sacks", field:"Sacks", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
                         {title:"Int", field:"iInterceptions", sorter:"number", mutator:interceptionMutator, editable:editCheck, editor: 'input'},
                         {title:"Fum", field:"iFumbles", sorter:"number", mutator:fumbleMutator, editable:editCheck, editor: 'input'},
-                        {title:"Pnts", field:"iPA", sorter:"number", mutator:paMutator, editable:editCheck, editor: 'input'},
+                        {title:"Pnts", field:"iPA", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
+                        //{title:"fgShare", field:"fgShare", sorter:"number", mutator:checkForBlank, editable:editCheck, editor: 'input'},
                     ],
                 },
                 /*

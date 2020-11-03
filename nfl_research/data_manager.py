@@ -284,7 +284,86 @@ class Data_Manager:
         logResultsArr.append('File SUCCESSFULLY written: ' + file_path)
     #END OF ELSE FOR FILE EXISTS
     return jsonResponse
-    
+
+  '''
+  *****************************************************************************************
+  EITHER LOADS JSON TEXT FROM DISK OR DOWNLOADS FROM URL AND STORES TO DISK.
+  - file_path : (str) path to the json file to save or load
+  - api_path : (str) path to the API URL to call
+  - forceReload : (bool) True/False - True will force us to redownload from the URL and 
+      overwrite file on disk
+  - logResultsArr : Note: this should be passed in as an array already created - so we can 
+      append to it - we are not allowed to reassign value of array inside this function as
+      it will not reference back to the original array and won't be passed back to caller.
+  *****************************************************************************************
+  '''
+  def combine_file_with_api(file_path, api_path, forceReload, logResultsArr, apiCallMethod = 1):
+    jsonResponse = ''
+    '''
+    CHECK EXISTING FIRST
+    '''
+    if (os.path.exists(file_path)):
+      #if the file exists and we are not forcing a reload then just continue
+      logResultsArr.append('Skipping Existing Stats: ' + file_path)
+      with open(file_path, 'r') as content_file:
+        jsonResponse = content_file.read()
+
+    #else either the file does not exist OR we are forcing a refresh
+    queryurl = api_path
+    apiResponse = ''
+    if (apiCallMethod == 1):
+        apiResponse = Data_Manager.get_text_from_url_nocookie(queryurl)
+    else:
+        apiResponse = Data_Manager.get_text_from_url_nocookie(queryurl, False)
+
+    logging.debug('API response: ' + apiResponse)
+    if (apiResponse == ""): 
+        logResultsArr.append('Error Calling URL: ' + queryurl)
+        if (jsonResponse == ""): 
+            logResultsArr.append('File not written: ' + file_path)
+            return;
+
+    if (forceReload == True or jsonResponse == ""):
+        #Just use the API response 
+        jsonResponse = apiResponse
+        logging.debug('File not fouond : ' + file_path + ' or forceReload:' + str(forceReload))
+        logResultsArr.append('File not fouond : ' + file_path + ' or forceReload:' + str(forceReload))
+    else:
+        file_data = json.loads(jsonResponse)
+        api_data = json.loads(apiResponse)
+
+        added_slots = []
+        file_slots = file_data.get('data', {'slots':[]}).get('slots', [])
+        api_slots = api_data.get('data', {'slots':[]}).get('slots', [])
+        for api_slot in api_slots:
+            foundIt = False;
+            for file_slot in file_slots:
+                if (api_slot.get('id', '') != '' and file_slot.get('id', '') != ''):
+                    if (api_slot.get('id', '') == file_slot.get('id', '')):
+                        foundIt = True;
+            if (foundIt == False):
+                added_slots.append(api_slot)
+        for this_slot in added_slots:
+            file_slots.append(this_slot)
+        #file_data['data']['slots'] = file_slots
+        
+        jsonResponse = json.dumps(file_data)
+
+
+    #NOTE: find a better way to check for no results back - like parse JSON and check data array
+    if (not jsonResponse or jsonResponse == '[]'):
+        logging.debug('Response was empty for: ' + file_path)
+        logResultsArr.append('Response was empty for: ' + file_path)
+        return
+    else :
+        #append_write = 'ab' # append if already exists
+        append_write = 'wb' # make a new file if not
+        file = open(file_path, append_write) 
+        file.write(str(jsonResponse).encode('utf-8')) 
+        file.close()
+        logResultsArr.append('File SUCCESSFULLY written: ' + file_path)
+    #END OF ELSE FOR FILE EXISTS
+    return jsonResponse
 
   '''
   *****************************************************************************************
@@ -450,7 +529,7 @@ class Data_Manager:
     # https://domination.dfsarmy.com/api/v1/lineup-tool/archived-slots?sport=nfl&site=draftkings&gameType=showdown
     # https://domination.dfsarmy.com/api/v1/lineup-tool/archived-slots?sport=nfl&site=fanduel&gameType=single-game
     api_path = DOM_API_URL + 'lineup-tool/' + str(slotsPath) + '?sport=nfl&site=' + str(site) + '&gameType=' + str(gameType)
-    results_data = Data_Manager.load_data_or_reload(raw_file, api_path, forceReload, logResultsArr, 2) #pass 2 for different api method
+    results_data = Data_Manager.combine_file_with_api(raw_file, api_path, forceReload, logResultsArr, 2) #pass 2 for different api method
     data["logResults"] = '\n'.join(logResultsArr)
     if (len(results_data) > 0) :
         try :
